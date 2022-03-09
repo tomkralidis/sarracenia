@@ -1,0 +1,270 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Documentation Standards &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation Standards</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="documentation-standards">
+<h1><a class="toc-backref" href="#id1">Documentation Standards</a><a class="headerlink" href="#documentation-standards" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#documentation-standards" id="id1">Documentation Standards</a></p>
+<ul>
+<li><p><a class="reference internal" href="#folder-structure" id="id2">Folder Structure</a></p>
+<ul>
+<li><p><a class="reference internal" href="#tutorials" id="id3">Tutorials</a></p></li>
+<li><p><a class="reference internal" href="#how2guides" id="id4">How2Guides</a></p></li>
+<li><p><a class="reference internal" href="#explanations" id="id5">Explanations</a></p></li>
+<li><p><a class="reference internal" href="#reference" id="id6">Reference</a></p></li>
+<li><p><a class="reference internal" href="#contribution" id="id7">Contribution</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#process" id="id8">Process</a></p>
+<ul>
+<li><p><a class="reference internal" href="#updating-the-wiki" id="id9">Updating the Wiki</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#style-guide" id="id10">Style Guide</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-rst" id="id11">Why rST?</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#localization" id="id12">Localization</a></p></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="folder-structure">
+<h2><a class="toc-backref" href="#id2">Folder Structure</a><a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h2>
+<p>Before starting work with documentation read <a class="reference external" href="https://documentation.divio.com/">the entire divo documentation article</a> (and the links on the left hand sidebar).
+It’ll take no longer than 30 minutes and you’ll gain a complete understanding of the
+expected structure, style and content of the documentation here.</p>
+<a class="reference external image-reference" href="https://documentation.divio.com/"><img alt="https://documentation.divio.com/_images/overview.png" src="https://documentation.divio.com/_images/overview.png" /></a>
+<p>We look to the unix directive in our documentation, each documentation file does one thing
+and does it well with respect to the 4 quadrants.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>TODO:Add example links to each of the below sections:</p>
+</div>
+<section id="tutorials">
+<h3><a class="toc-backref" href="#id3">Tutorials</a><a class="headerlink" href="#tutorials" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Learning-oriented, specifically learning how rather than learning <em>that</em>.</p></li>
+<li><p>Allow the user to learn by doing to get them started, be sure your tutorial works and users can see results immediately.</p></li>
+<li><p>Tutorials must be reliably repeatable focused on concrete steps (not abstract concepts) with the minimum necessary explanation.</p></li>
+</ul>
+</section>
+<section id="how2guides">
+<h3><a class="toc-backref" href="#id4">How2Guides</a><a class="headerlink" href="#how2guides" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Problem and goal oriented: “<strong>I want to… How do I…</strong>” Differing from tutorials in that tutorials are for complete beginners, how to guides assume some knowledge and understanding with a basic setup and tools.</p></li>
+<li><p>Provide a series of steps focused on the results of some particular problem.</p></li>
+<li><p>Don’t explain concepts, if they are important, they can be linked to in <cite>../Explanations/</cite></p></li>
+<li><p>There are multiple ways to skin a cat, remain flexible in your guide so users can see <em>how</em> things are done.</p></li>
+<li><p><strong>NAME GUIDES WELL</strong> enough to tell the user <em>exactly</em> what they do at a glance.</p></li>
+</ul>
+</section>
+<section id="explanations">
+<h3><a class="toc-backref" href="#id5">Explanations</a><a class="headerlink" href="#explanations" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Understanding-oriented: can be equally considered discussions. Much more relaxed version of documentation where concepts are explored from a higher level or different perspectives.</p></li>
+<li><p>Provide context, discuss alternatives and opinions while providing technical reference (for other sections).</p></li>
+</ul>
+</section>
+<section id="reference">
+<h3><a class="toc-backref" href="#id6">Reference</a><a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Information oriented: code-determined descriptions of functionality.</p></li>
+<li><p>Strictly for the man pages and direct reference of the various programs, protocols, and functions.</p></li>
+</ul>
+</section>
+<section id="contribution">
+<h3><a class="toc-backref" href="#id7">Contribution</a><a class="headerlink" href="#contribution" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Information critical to the enhancement and progression of the Sarracenia project, ie: for those that are looking to develop Sarracenia.</p></li>
+<li><p>Style guide(s)</p></li>
+<li><p>Template(s)</p></li>
+</ul>
+</section>
+</section>
+<section id="process">
+<h2><a class="toc-backref" href="#id8">Process</a><a class="headerlink" href="#process" title="Permalink to this headline">¶</a></h2>
+<p>The development process is to write up what one intends to do or have done into
+a <a class="reference external" href="https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html">reStructuredText</a>
+file in <cite>/docs/Explanation/Design/</cite>. Ideally, the discussion of information there acts
+as a starting point which can be edited into documentation for the feature(s) as they
+are implemented. Each new component sr_&lt;whatever&gt;, needs to have relevant man pages
+implemented. The how to guides and tutorials should also be revised to reflect additions
+or changes of the new component.</p>
+<div class="admonition error">
+<p class="admonition-title">Error</p>
+<p>Need Peter to help ID worthy information in doc/design to pull over to
+/docs/Explanation/Design/</p>
+</div>
+<section id="updating-the-wiki">
+<h3><a class="toc-backref" href="#id9">Updating the Wiki</a><a class="headerlink" href="#updating-the-wiki" title="Permalink to this headline">¶</a></h3>
+<p>The wiki in GitHub is a separate Git project that has been grafted into the main project
+as a subtree in /docs/. This means that any changes to the wiki pages in /docs/ will not
+be updated on the web wiki until the changes are pushed to the subtree. This can be
+achieved by pushing changes to the main project then executing the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git subtree push --squash --prefix docs git@github.com:MetPX/sarracenia.wiki.git master
+</pre></div>
+</div>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p>Editing things via the web interface will get overwritten. Only make changes to the
+documentation via the main project’s /docs/ folder then push them to the subtree.</p>
+</div>
+<p>The reason this is setup this way, is to allow a single source of documentation with
+multiple access methods for all range of skill levels with the Sarracenia product.</p>
+</section>
+</section>
+<section id="style-guide">
+<h2><a class="toc-backref" href="#id10">Style Guide</a><a class="headerlink" href="#style-guide" title="Permalink to this headline">¶</a></h2>
+<p>Command line execution shall be written in the style of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>An initial comment describing the following steps or processes::
+
+  $ command 1
+    relevant output
+  $command 2
+    .
+    .
+    relevant output
+    newline relevant output
+</pre></div>
+</div>
+<p>Important notes:</p>
+<ul class="simple">
+<li><p>Initial comment ends with <cite>::</cite> followed by an empty newline</p></li>
+<li><p>Thereafter lies the (two space) indented code block</p></li>
+<li><p>Commands syntax: ‘<cite>$ &lt;cmd&gt;</cite>’</p>
+<ul>
+<li><p>Alternatively indicate root level commands with ‘<cite># &lt;cmd&gt;</cite>’</p></li>
+</ul>
+</li>
+<li><p>Command output is (two space) indented from leading command.</p>
+<ul>
+<li><p>Irrelevant lines of output may be substituted for dots or outright omitted.</p></li>
+</ul>
+</li>
+</ul>
+<p>pick and stick to a default header hierarchy (ie : = &gt; ~ &gt; - &gt; … for title &gt; h1 &gt; h2 &gt; h3… etc)</p>
+<section id="why-rst">
+<h3><a class="toc-backref" href="#id11">Why rST?</a><a class="headerlink" href="#why-rst" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html">reStructuredText</a> was chosen primarily as it supports the auto-creation of a table of contents with the ‘<code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">contents::</span></code>’ directive.
+Like many other markup languages, it also supports inline styling, tables, headings and literal blocks.</p>
+</section>
+</section>
+<section id="localization">
+<h2><a class="toc-backref" href="#id12">Localization</a><a class="headerlink" href="#localization" title="Permalink to this headline">¶</a></h2>
+<p>This project is intended to be translated in French and English at a minimum as it’s
+used across the Government of Canada which has these two official languages.</p>
+<p>The French documentation has the same file structure and names as the English, but
+is placed under the fr/ sub-directory.  It’s easiest if the documentation is produced
+in both languages at once. At the very least use an auto translation tool (such as
+<a class="reference external" href="https://deepl.com">deepl</a>) to provide a starting point. Same procedure in
+reverse for Francophones.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Documentation Standards</a><ul>
+<li><a class="reference internal" href="#folder-structure">Folder Structure</a><ul>
+<li><a class="reference internal" href="#tutorials">Tutorials</a></li>
+<li><a class="reference internal" href="#how2guides">How2Guides</a></li>
+<li><a class="reference internal" href="#explanations">Explanations</a></li>
+<li><a class="reference internal" href="#reference">Reference</a></li>
+<li><a class="reference internal" href="#contribution">Contribution</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#process">Process</a><ul>
+<li><a class="reference internal" href="#updating-the-wiki">Updating the Wiki</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#style-guide">Style Guide</a><ul>
+<li><a class="reference internal" href="#why-rst">Why rST?</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#localization">Localization</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Contribution/Documentation.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Documentation Standards</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

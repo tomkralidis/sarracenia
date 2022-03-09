@@ -1,0 +1,15 @@
+win_installer.cfg
+dist
+*.egg
+*.egg-info
+.vagrant
+.pybuild
+*.debhelper
+*.debhelper.log
+libsarra-c*
+sarra-c*
+build
+pynsist_pkgs
+sarra/*.pyc
+.idea
+.vscode

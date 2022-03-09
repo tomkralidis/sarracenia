@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>UPGRADE GUIDE &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">UPGRADE GUIDE</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="upgrade-guide">
+<h1>UPGRADE GUIDE<a class="headerlink" href="#upgrade-guide" title="Permalink to this headline">¶</a></h1>
+<p>This file documents changes in behaviour to provide guidance to those upgrading
+from a previous version.  To upgrade across several versions, one needs to start
+at the version after the one installed, and heed all notifications for interim
+versions.  While configuration language stability is an important
+goal, on occasion changes cannot be avoided. This file does not document new
+features, but only changes that cause concern during upgrades.  The notices
+take the form:</p>
+<dl class="simple">
+<dt><strong>CHANGE</strong></dt><dd><p>Indicates where configurations files must be changed to get the same behaviour as prior to release.</p>
+</dd>
+<dt><strong>ACTION</strong></dt><dd><p>Indicates a maintenance activity required as part of an upgrade process.</p>
+</dd>
+<dt><strong>BUG</strong></dt><dd><p>Indicates a bug serious to indicate that deployment of this version is not recommended.</p>
+</dd>
+<dt><em>NOTICE</em></dt><dd><p>A behaviour change that will be noticeable during upgrade, but is no cause for concern.</p>
+</dd>
+<dt><em>SHOULD</em></dt><dd><p>Indicates recommended interventions that are recommended, but not mandatory. If prescribed activity is not done,
+the consequence is either a configuration line that has no effect (wasteful) or the application
+may generate messages.</p>
+</dd>
+</dl>
+<section id="installation-instructions">
+<h2>Installation Instructions<a class="headerlink" href="#installation-instructions" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="../Tutorials/Install.rst">Installation Guide</a></p>
+</section>
+<section id="git">
+<h2>git<a class="headerlink" href="#git" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="v03">
+<h2>v03<a class="headerlink" href="#v03" title="Permalink to this headline">¶</a></h2>
+<p>not yet released.</p>
+</section>
+<section id="v2-xx-yy">
+<h2>v2.xx.yy<a class="headerlink" href="#v2-xx-yy" title="Permalink to this headline">¶</a></h2>
+<p>There are some major changes in using any version &gt;3.00, compared to 2.x.
+Configuration and state files are under the ‘sr3’ directory (on linux: ~/.config/sr3, and ~/.cache/sr3)
+instead of .sarra. So copy config files that one wants to use from the old ~/.config/sarra to
+~/.config/sr3. The two versions operate independently.</p>
+<p>Most v2 plugins (as per <em>plugin</em> and <em>on_</em> directives) are honoured via a wrapper class. To build
+native v3 plugins, One should investigate the flowCallback (flowcb) class.</p>
+<p>default topicPrefix is just plain ‘v03’  as opposed to topic_prefix being ‘v02.post’ in v2.</p>
+<p>sr_audit component is gone.  It’s function is replaced by running <em>sr sanity</em> as a cron
+job (or scheduled task on windows.) to make sure that necessary processes continue to run.</p>
+<p>invocation is changed as follows:</p>
+<p>old v02:   <strong>sr_subscribe start myflow.conf</strong></p>
+<p>new v03:   <strong>sr3 start subscribe/myflow.conf</strong></p>
+<p>In v3, one can specify a list of configurations to start, and they can be a combination of
+any component to be started, or stopped at once.</p>
+<p>There are not supposed to be too many Incompatibilities when upgrading from v2.XX.yyy
+This is a running list of incompatibilities that result from explicit
+choices.  breaking changes:</p>
+<ul>
+<li><p>in v3, use – for full word options, like –config, or –broker.  In v2 you could use -config and -broker,
+but that will end badly in v3.  In the old command line parser, -config, and –config were the same, which
+was idiosyncratic.  The new
+command line option parser is built on ArgParse, and interprets a single - as prefix a single option where the
+the subsequent letters are and argument.  Example</p>
+<p>-config hoho.conf  -&gt; in v2 refers to loading the hoho.conf file as a configuration.</p>
+<p>in v3, it will be interpreted as -c (config) load the onfig.conf gile, and hoho.conf is part of some subsequent option.</p>
+</li>
+<li><p>loglevel none -&gt; loglevel notset (now passing loglevel setting directly to python logging module, none isn’t defined.)</p></li>
+<li><p>log messages and output will be completely different, as the logging modules have been re-done.</p></li>
+<li><p>dropped settings: use_amqplib, use_pika… replaced by separate per protocol implementation libraries. amqp uses the ‘amqp’ library which is neither of the above. ( commit 02fad37b89c2f51420e62f2f883a3828d2056de1 )</p></li>
+<li><p>dropping on_watch plugins. afaict, no-one uses them.  The way v03 works it would be an after_accept for a watch.
+makes more sense that way anyways.</p></li>
+<li><p>plugins that access internals of sr_retry need to be rewritten, as the class is now plugin/retry.py.
+the way to queue something for retry in current plugins is to append them to the failed queue.
+This is only an issue in the flow tests of sr_insects.</p></li>
+<li><p>do_download and do_send were 1st pass at <em>schemed</em> plugins, I think they should be deprecated/replaced
+by do_get and do_put. unclear whether there is a need for these anymore (download and send plugins are
+at wrong level of abstraction)</p></li>
+<li><p>do_download, do_send, do_get, do_put are <em>schemed</em> downloads… that is, rather than stacking so that
+all are called, they are registered for particular protocols.  in v2, for example accel_* plugins would
+register the “download” scheme. an on_message entry point would alter the scheme so that the do_* routine
+would be invoked. In v2, the calling signature for all plugins is the same (self, parent) but for
+these do_get and do_put cases, that is quite counter productive. so instead have a calling signature
+identical to built-in protocol get/put… src_file, dst_file, src_offset, dst_offset, len )
+Resolution: just implement new Transfer classes, does not naturally fit in flowcb.</p></li>
+<li><p>In v2, mirror default settings used to be False in all components except sr_sarra.
+but the mirror setting was not honoured in shovel, and winnow (bug #358)
+this bug is corrected in v3, but then you notice that the default is wrong.</p>
+<p>In v3, the default for mirror is changed to True for all flows except subscribe, which
+is the least surprising behaviour given the default to False in v2.</p>
+</li>
+<li><p>In v2, if you delete a file, and then re-create it, an event will be created.
+In v3, if you do the same, the old entry will be in the nodupe cache, and the event will be suppressed.
+I have noticed this difference, but not sure which version’s behaviour is correct.
+it could be fixed, if we decide the old behaviour is right.</p></li>
+<li><p>sr_watch, with the <em>force_polling</em> option, is much less efficient on v3 than v2
+for large directory trees (see issue #403 )</p></li>
+</ul>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">UPGRADE GUIDE</a><ul>
+<li><a class="reference internal" href="#installation-instructions">Installation Instructions</a></li>
+<li><a class="reference internal" href="#git">git</a></li>
+<li><a class="reference internal" href="#v03">v03</a></li>
+<li><a class="reference internal" href="#v2-xx-yy">v2.xx.yy</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/How2Guides/UPGRADING.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">UPGRADE GUIDE</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

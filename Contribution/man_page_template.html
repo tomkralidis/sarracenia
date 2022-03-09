@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SR3_TITLE &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SR3_TITLE</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sr3-title">
+<h1><a class="toc-backref" href="#id1">SR3_TITLE</a><a class="headerlink" href="#sr3-title" title="Permalink to this headline">¶</a></h1>
+<section id="sr-title">
+<h2><a class="toc-backref" href="#id2">sr_title</a><a class="headerlink" href="#sr-title" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Manual section</dt>
+<dd class="field-odd"><p>1</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>&#64;Date&#64;</p>
+</dd>
+<dt class="field-odd">Version</dt>
+<dd class="field-odd"><p>&#64;Version&#64;</p>
+</dd>
+<dt class="field-even">Manual group</dt>
+<dd class="field-even"><p>MetPX-Sarracenia</p>
+</dd>
+</dl>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#sr3-title" id="id1">SR3_TITLE</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sr-title" id="id2">sr_title</a></p>
+<ul>
+<li><p><a class="reference internal" href="#synopsis" id="id3">SYNOPSIS</a></p></li>
+<li><p><a class="reference internal" href="#description" id="id4">DESCRIPTION</a></p></li>
+<li><p><a class="reference internal" href="#configuration" id="id5">CONFIGURATION</a></p></li>
+<li><p><a class="reference internal" href="#environment-variables" id="id6">ENVIRONMENT VARIABLES</a></p></li>
+<li><p><a class="reference internal" href="#see-also" id="id7">SEE ALSO</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="synopsis">
+<h3><a class="toc-backref" href="#id3">SYNOPSIS</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
+<p><strong>sr_title</strong> foreground|start|stop|restart|reload|status configfile
+<strong>sr_title</strong> cleanup|declare|setup configfile</p>
+</section>
+<section id="description">
+<h3><a class="toc-backref" href="#id4">DESCRIPTION</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p><strong>sr_title</strong> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit
+esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
+cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id
+est laborum. <a class="reference external" href="sr3.1.rst#subscribe">sr_subscribe(7)</a>
+with some limitations.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>doesn’t download data, only circulates posts.</p></li>
+<li><p>runs as only a single instance (no multiple instances).</p></li>
+<li><p>does not support any plugins.</p></li>
+<li><p>does not support vip for high availability.</p></li>
+<li><p>different regular expression library: POSIX vs. python.</p></li>
+<li><p>does not support regex for the strip command (no non-greedy regex).</p></li>
+</ul>
+</div></blockquote>
+<p>It can therefore act as a drop-in replacement for:</p>
+<blockquote>
+<div><p><a class="reference external" href="sr3.1.rst#report">sr_report(1)</a> - process report messages.</p>
+<p><a class="reference external" href="sr3.1.rst#shovel">sr_shovel(8)</a> - process shovel messages.</p>
+<p><a class="reference external" href="sr3.1.rst#winnow">sr_winnow(8)</a> - process winnow messages.</p>
+</div></blockquote>
+<p>The <strong>sr_cpump</strong> command takes two arguments: an action start|stop|restart|reload|status… (self described)
+followed by a configuration file.</p>
+<p>The <strong>foreground</strong> action is used when debugging a configuration, when the user wants to
+run the program and its configfile interactively…   The <strong>foreground</strong> instance
+is not concerned by other actions.  The user would stop using the <strong>foreground</strong> instance
+by simply &lt;ctrl-c&gt; on linux or use other means to send SIGINT or SIGTERM to the process.</p>
+<p>The actions <strong>cleanup</strong>, <strong>declare</strong>, <strong>setup</strong> can be used to manage resources on
+the rabbitmq server. The resources are either queues or exchanges. <strong>declare</strong> creates
+the resources. <strong>setup</strong> creates and additionally does the bindings of queues.</p>
+<p>The actions <strong>add</strong>, <strong>remove</strong>, <strong>edit</strong>, <strong>list</strong>, <strong>enable</strong>, <strong>disable</strong> act
+on configurations.</p>
+</section>
+<section id="configuration">
+<h3><a class="toc-backref" href="#id5">CONFIGURATION</a><a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim
+ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque
+porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
+adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore
+et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis
+nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid
+ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea
+voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem
+eum fugiat quo voluptas nulla pariatur?”</p>
+</section>
+<section id="environment-variables">
+<h3><a class="toc-backref" href="#id6">ENVIRONMENT VARIABLES</a><a class="headerlink" href="#environment-variables" title="Permalink to this headline">¶</a></h3>
+<p>If the SR_CONFIG_EXAMPLES variable is set, then the <em>add</em> directive can be used
+to copy examples into the user’s directory for use and/or customization.</p>
+<p>An entry in the ~/.config/sarra/default.conf (created via sr_subscribe edit default.conf )
+could be used to set the variable:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">declare</span> <span class="n">env</span> <span class="n">SR_CONFIG_EXAMPLES</span><span class="o">=/</span><span class="n">usr</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">python3</span><span class="o">/</span><span class="n">dist</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="n">sarra</span><span class="o">/</span><span class="n">examples</span>
+</pre></div>
+</div>
+<p>The value should be available from the output of a list command from the python
+implementation.</p>
+</section>
+<section id="see-also">
+<h3><a class="toc-backref" href="#id7">SEE ALSO</a><a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="sr3.1.rst#report">sr3_report(7)</a> - the format of report messages.</p>
+<p><a class="reference external" href="sr3.1.rst#report">sr3_report(1)</a> - process report messages.</p>
+<p><a class="reference external" href="sr3_post.1.rst">sr3_post(1)</a> - post announcemensts of specific files.</p>
+<p><a class="reference external" href="sr_post.7.rst">sr3_post(7)</a> - the format of announcements.</p>
+<p><a class="reference external" href="sr3.1.rst#subscribe">sr3_subscribe(1)</a> - the download client.</p>
+<p><a class="reference external" href="sr3.1.rst#watch">sr3_watch(1)</a> - the directory watching daemon.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">SR3_TITLE</a><ul>
+<li><a class="reference internal" href="#sr-title">sr_title</a><ul>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a></li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#configuration">CONFIGURATION</a></li>
+<li><a class="reference internal" href="#environment-variables">ENVIRONMENT VARIABLES</a></li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Contribution/man_page_template.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SR3_TITLE</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

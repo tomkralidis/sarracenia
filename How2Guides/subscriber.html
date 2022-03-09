@@ -1,0 +1,914 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Subscriber Guide &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Subscriber Guide</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="subscriber-guide">
+<h1><a class="toc-backref" href="#id1">Subscriber Guide</a><a class="headerlink" href="#subscriber-guide" title="Permalink to this headline">¶</a></h1>
+<section id="receiving-data-from-a-metpx-sarracenia-data-pump">
+<h2><a class="toc-backref" href="#id2">Receiving Data from a MetPX-Sarracenia Data Pump</a><a class="headerlink" href="#receiving-data-from-a-metpx-sarracenia-data-pump" title="Permalink to this headline">¶</a></h2>
+<p>[ <a class="reference external" href="fr/subscriber.rst">version française</a> ]</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#subscriber-guide" id="id1">Subscriber Guide</a></p>
+<ul>
+<li><p><a class="reference internal" href="#receiving-data-from-a-metpx-sarracenia-data-pump" id="id2">Receiving Data from a MetPX-Sarracenia Data Pump</a></p>
+<ul>
+<li><p><a class="reference internal" href="#revision-record" id="id3">Revision Record</a></p></li>
+<li><p><a class="reference internal" href="#introduction" id="id4">Introduction</a></p></li>
+<li><p><a class="reference internal" href="#server-side-resources-allocated-for-subscribers" id="id5">Server Side Resources Allocated for Subscribers</a></p></li>
+<li><p><a class="reference internal" href="#working-with-multiple-configurations" id="id6">Working with Multiple Configurations</a></p></li>
+<li><p><a class="reference internal" href="#high-priority-delivery" id="id7">High Priority Delivery</a></p></li>
+<li><p><a class="reference internal" href="#refining-selection" id="id8">Refining Selection</a></p></li>
+<li><p><a class="reference internal" href="#performance" id="id9">Performance</a></p>
+<ul>
+<li><p><a class="reference internal" href="#optimize-file-selection-per-process" id="id10">Optimize File Selection per Process</a></p></li>
+<li><p><a class="reference internal" href="#use-instances" id="id11">Use Instances</a></p></li>
+<li><p><a class="reference internal" href="#high-performance-duplicate-suppression" id="id12">High Performance Duplicate Suppression</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#plugins" id="id13">Plugins</a></p></li>
+<li><p><a class="reference internal" href="#file-rxpipe" id="id14">file_rxpipe</a></p></li>
+<li><p><a class="reference internal" href="#anti-virus-scanning" id="id15">Anti-Virus Scanning</a></p></li>
+<li><p><a class="reference internal" href="#logging-and-debugging" id="id16">Logging and Debugging</a></p>
+<ul>
+<li><p><a class="reference internal" href="#flowcb-log-py-debug-tuning" id="id17">flowcb/log.py Debug Tuning</a></p></li>
+<li><p><a class="reference internal" href="#moth-debug-tuning" id="id18">moth Debug Tuning</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#speedo-metrics" id="id19">Speedo Metrics</a></p></li>
+<li><p><a class="reference internal" href="#partial-file-updates" id="id20">Partial File Updates</a></p></li>
+<li><p><a class="reference internal" href="#redundant-file-reception" id="id21">Redundant File Reception</a></p></li>
+<li><p><a class="reference internal" href="#web-proxies" id="id22">Web Proxies</a></p></li>
+<li><p><a class="reference internal" href="#more-information" id="id23">More Information</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="revision-record">
+<h3><a class="toc-backref" href="#id3">Revision Record</a><a class="headerlink" href="#revision-record" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">version</dt>
+<dd class="field-odd"><p>&#64;Version&#64;</p>
+</dd>
+<dt class="field-even">date</dt>
+<dd class="field-even"><p>&#64;Date&#64;</p>
+</dd>
+</dl>
+</section>
+<section id="introduction">
+<h3><a class="toc-backref" href="#id4">Introduction</a><a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h3>
+<p>A Sarracenia data pump is a web server with notifications
+for subscribers to know, quickly, when new data has arrived.
+To find out what data is already available on a pump,
+view the tree with a web browser.
+For simple immediate needs, one can download data using the
+browser itself, or a standard tool such as wget.
+The usual intent is for sr_subscribe to automatically
+download the data wanted to a directory on a subscriber
+machine where other software can process it.  Please note:</p>
+<ul class="simple">
+<li><p>the tool is entirely command line driven (there is no GUI) More accurately, it is mostly config file driven.
+most of the <em>interface</em> involves using a text editor to modify configuration files.</p></li>
+<li><p>while written to be compatible with other environments,
+the focus is on Linux usage.</p></li>
+<li><p>the tool can be used as either an end-user tool, or a system-wide transfer engine.
+This guide is focused on the end-user case.</p></li>
+<li><p>More detailed reference material is available at the
+traditional sr_subscribe(1) man page,</p></li>
+<li><p>All documentation of the package is available
+at <a class="reference external" href="https://github.com/MetPX">https://github.com/MetPX</a></p></li>
+</ul>
+<p>While Sarracenia can work with any web tree, or any URL
+that sources choose to post, there is a conventional layout.
+A data pump’s web server will just expose web accessible folders
+and the root of the tree is the date, in YYYYMMDD format.
+These dates do not represent anything about the data other than
+when it was put into the pumping network, and since Sarracenia
+always uses Universal Co-ordinated Time, the dates might not correspond
+the current date/time in the location of the subscriber:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Index</span> <span class="n">of</span> <span class="o">/</span>
+
+<span class="n">Name</span>                    <span class="n">Last</span> <span class="n">modified</span>      <span class="n">Size</span>  <span class="n">Description</span>
+<span class="n">Parent</span> <span class="n">Directory</span>                             <span class="o">-</span>
+<span class="mi">20151105</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="mi">20151106</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="mi">20151107</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="mi">20151108</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="mi">20151109</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="mi">20151110</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+</pre></div>
+</div>
+<p>A variable number of days are stored on each data pump, for those
+with an emphasis on real-time reliable delivery, the number of days
+will be shorter.  For other pumps, where long term outages need
+to be tolerated, more days will be kept.</p>
+<p>Under the first level of date trees, there is a directory
+per source.  A Source in Sarracenia is an account used to inject
+data into the pump network.  Data can cross many pumps on its
+way to the visible ones:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Index</span> <span class="n">of</span> <span class="o">/</span><span class="mi">20151110</span>
+
+<span class="n">Name</span>                    <span class="n">Last</span> <span class="n">modified</span>      <span class="n">Size</span>  <span class="n">Description</span>
+<span class="n">Parent</span> <span class="n">Directory</span>                             <span class="o">-</span>
+<span class="n">UNIDATA</span><span class="o">-</span><span class="n">UCAR</span><span class="o">/</span>           <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="n">NOAAPORT</span><span class="o">/</span>               <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="n">MSC</span><span class="o">-</span><span class="n">CMC</span><span class="o">/</span>                <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="n">UKMET</span><span class="o">-</span><span class="n">RMDCN</span><span class="o">/</span>            <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="n">UKMET</span><span class="o">-</span><span class="n">Internet</span><span class="o">/</span>         <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+<span class="n">NWS</span><span class="o">-</span><span class="n">OPSNET</span><span class="o">/</span>             <span class="mi">2015</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">27</span> <span class="mi">06</span><span class="p">:</span><span class="mi">44</span>    <span class="o">-</span>
+</pre></div>
+</div>
+<p>The data under each of these directories was obtained from the named
+source. In these examples, it is actually injected by DataInterchange
+staff, and the names are chosen to represent the origin of the data.</p>
+<p>To list the available configurations with <em>sr_subscribe list</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 list examples
+  Sample Configurations: (from: /usr/lib/python3/dist-packages/sarracenia/examples )
+  cpump/cno_trouble_f00.inc        poll/aws-nexrad.conf             poll/pollingest.conf             poll/pollnoaa.conf               poll/pollsoapshc.conf
+  poll/pollusgs.conf               poll/pulse.conf                  post/WMO_mesh_post.conf          sarra/wmo_mesh.conf              sender/ec2collab.conf
+  sender/pitcher_push.conf         shovel/no_trouble_f00.inc        subscribe/WMO_Sketch_2mqtt.conf  subscribe/WMO_Sketch_2v3.conf    subscribe/WMO_mesh_CMC.conf
+  subscribe/WMO_mesh_Peer.conf     subscribe/aws-nexrad.conf        subscribe/dd_2mqtt.conf          subscribe/dd_all.conf            subscribe/dd_amis.conf
+  subscribe/dd_aqhi.conf           subscribe/dd_cacn_bulletins.conf subscribe/dd_citypage.conf       subscribe/dd_cmml.conf           subscribe/dd_gdps.conf
+  subscribe/dd_ping.conf           subscribe/dd_radar.conf          subscribe/dd_rdps.conf           subscribe/dd_swob.conf           subscribe/ddc_cap-xml.conf
+  subscribe/ddc_normal.conf        subscribe/downloademail.conf     subscribe/ec_ninjo-a.conf        subscribe/hpfx_amis.conf         subscribe/local_sub.conf
+  subscribe/pitcher_pull.conf      subscribe/sci2ec.conf            subscribe/subnoaa.conf           subscribe/subsoapshc.conf        subscribe/subusgs.conf
+  sender/ec2collab.conf            sender/pitcher_push.conf         watch/master.conf                watch/pitcher_client.conf        watch/pitcher_server.conf
+  watch/sci2ec.conf
+</pre></div>
+</div>
+<p>Each section of the listing shows the contents of the directory shown in parentheses.
+To use an example as a starting point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 add subscribe/dd_amis.conf
+  add: 2021-01-26 01:13:54,047 [INFO] sarracenia.sr add copying: /usr/lib/python3/dist-packages/sarracenia/examples/subscribe/dd_amis.conf to /home/peter/.config/sr3/subscribe/dd_amis.conf
+</pre></div>
+</div>
+<p>Now files in <cite>.config/</cite> can be used directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 list
+  User Configurations: (from: /home/peter/.config/sr3 )
+  subscribe/dd_amis.conf           admin.conf                       credentials.conf                 default.conf
+  logs are in: /home/peter/.cache/sr3/log
+</pre></div>
+</div>
+<p>To view a configuration, give it to <cite>sr_subscribe list</cite> as an argument:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 list subscribe/dd_amis.conf
+  # this is a feed of wmo bulletin (a set called AMIS in the old times)
+
+  broker amqps://dd.weather.gc.ca/
+
+  # instances: number of downloading processes to run at once.  defaults to 1. Not enough for this case
+  instances 5
+
+  # expire, in operational use, should be longer than longest expected interruption
+  expire 10m
+
+  subtopic bulletins.alphanumeric.#
+
+  accept .*
+</pre></div>
+</div>
+<p>To delete a configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 remove subscribe/dd_amis
+  2021-01-26 01:17:24,967 [INFO] root remove FIXME remove! [&#39;subscribe/dd_amis&#39;]
+  2021-01-26 01:17:24,967 [INFO] root remove removing /home/peter/.config/sr3/subscribe/dd_amis.conf
+</pre></div>
+</div>
+</section>
+<section id="server-side-resources-allocated-for-subscribers">
+<h3><a class="toc-backref" href="#id5">Server Side Resources Allocated for Subscribers</a><a class="headerlink" href="#server-side-resources-allocated-for-subscribers" title="Permalink to this headline">¶</a></h3>
+<p>Every configuration results in corresponding resources being declared on the broker.
+When changing <em>subtopic</em> or <em>queue</em> settings, or when one expects to not use
+a configuration for an extended period of time, it is best to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sr3</span> <span class="n">cleanup</span> <span class="n">subscribe</span><span class="o">/</span><span class="n">swob</span><span class="o">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<p>which will de-allocate the queue (and its bindings) on the server.</p>
+<p>Why? Whenever a subscriber is started, a queue is created on the data pump, with
+the topic bindings set by the configuration file. If the subscriber is stopped,
+the queue keeps getting messages as defined by subtopic selection, and when the
+subscriber starts up again, the queued messages are forwarded to the client.
+So when the <em>subtopic</em> option is changed, since it is already defined on the
+server, one ends up adding a binding rather than replacing it.  For example,
+if one has a subtopic that contains SATELLITE, and then stops the subscriber,
+edit the file and now the topic contains only RADAR, when the subscriber is
+restarted, not only will all the queued satellite files be sent to the consumer,
+but the RADAR is added to the bindings, rather than replacing them, so the
+subscriber will get both the SATELLITE and RADAR data even though the configuration
+no longer contains the former.</p>
+<p>Also, if one is experimenting, and a queue is to be stopped for a very long
+time, it may accumulate a large number of messages. The total number of messages
+on a data pump has an effect on the pump performance for all users. It is therefore
+advisable to have the pump de-allocate resources when they will not be needed
+for an extended periods, or when experimenting with different settings.</p>
+</section>
+<section id="working-with-multiple-configurations">
+<h3><a class="toc-backref" href="#id6">Working with Multiple Configurations</a><a class="headerlink" href="#working-with-multiple-configurations" title="Permalink to this headline">¶</a></h3>
+<p>Place all configuration files, with the .conf suffix, in a standard
+directory: ~/.config/sr3/subscribe/ For example, if there are two files in
+that directory: CMC.conf and NWS.conf, one could then run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>peter@idefix:~/test$ sr3 start subscribe/CMC.conf
+2016-01-14 18:13:01,414 [INFO] installing script validate_content.py
+2016-01-14 18:13:01,416 [INFO] installing script validate_content.py
+2016-01-14 18:13:01,416 [INFO] sr_subscribe CMC 0001 starting
+2016-01-14 18:13:01,418 [INFO] sr_subscribe CMC 0002 starting
+2016-01-14 18:13:01,419 [INFO] sr_subscribe CMC 0003 starting
+2016-01-14 18:13:01,421 [INFO] sr_subscribe CMC 0004 starting
+2016-01-14 18:13:01,423 [INFO] sr_subscribe CMC 0005 starting
+peter@idefix:~/test$
+</pre></div>
+</div>
+<p>to start the CMC downloading configuration.  One can use by
+using the sr command to start/stop multiple configurations at once.
+The sr command will go through the default directories and start up
+all the configurations it finds:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>peter@idefix:~/test$ sr3 start
+2016-01-14 18:13:01,414 [INFO] installing script validate_content.py
+2016-01-14 18:13:01,416 [INFO] installing script validate_content.py
+2016-01-14 18:13:01,416 [INFO] sr_subscribe CMC 0001 starting
+2016-01-14 18:13:01,418 [INFO] sr_subscribe CMC 0002 starting
+2016-01-14 18:13:01,419 [INFO] sr_subscribe CMC 0003 starting
+2016-01-14 18:13:01,421 [INFO] sr_subscribe CMC 0004 starting
+2016-01-14 18:13:01,423 [INFO] sr_subscribe CMC 0005 starting
+2016-01-14 18:13:01,416 [INFO] sr_subscribe NWS 0001 starting
+2016-01-14 18:13:01,416 [INFO] sr_subscribe NWS 0002 starting
+2016-01-14 18:13:01,416 [INFO] sr_subscribe NWS 0003 starting
+peter@idefix:~/test$
+</pre></div>
+</div>
+<p>will start up some sr3 processes as configured by CMC.conf and others
+to match NWS.conf. Sr3 stop will also do what you would expect. As will sr3 status.
+Note that there are 5 sr_subscribe processes start with the CMC
+configuration and 3 NWS ones. These are <em>instances</em> and share the same
+download queue.</p>
+</section>
+<section id="high-priority-delivery">
+<h3><a class="toc-backref" href="#id7">High Priority Delivery</a><a class="headerlink" href="#high-priority-delivery" title="Permalink to this headline">¶</a></h3>
+<p>While the Sarracenia protocol does not provide explicit prioritization, the use
+of multiple queues provides similar benefits. Each configuration results
+in a queue declaration on the server side. Group products at like priority into
+a queue by selecting them using a common configuration. The smaller the groupings,
+the lower the delay of processing. While all queues are processed at the same priority,
+data passes though shorter queues more quickly. One can summarize with:</p>
+<blockquote>
+<div><p><strong>Use Multiple Configurations to Prioritize</strong></p>
+</div></blockquote>
+<p>To make the advice concrete, take the example of the Environment Canada data
+mart ( dd.weather.gc.ca ), which distributes gridded binaries, GOES satellite
+imagery, many thousands of city forecasts, observations, RADAR products, etc…
+For real-time weather, warnings and RADAR data are the highest priority. At certain
+times of the day, or in cases of backlogs, many hundreds of thousands of products
+can delay receipt of high priority products if only a single queue is used.</p>
+<p>To ensure prompt processing of data in this case, define one configuration to subscribe
+to weather warnings (which are a very small number of products), a second for the RADARS
+(a larger but still relatively small group), and a third (largest grouping) for all
+the other data. Each configuration will use a separate queue. Warnings will be
+processed the fastest, RADARS will queue up against each other and so experience some
+more delay, and other products will share a single queue and be subject to more
+delay in cases of backlog.</p>
+<p><a class="reference external" href="https://github.com/MetPX/sarracenia/blob/master/sarra/examples/subscribe/ddc_hipri.conf">https://github.com/MetPX/sarracenia/blob/master/sarra/examples/subscribe/ddc_hipri.conf</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">broker</span> <span class="n">amqps</span><span class="p">:</span><span class="o">//</span><span class="n">dd</span><span class="o">.</span><span class="n">weather</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">ca</span><span class="o">/</span>
+<span class="n">mirror</span>
+<span class="n">directory</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">web</span>
+<span class="n">subtopic</span> <span class="n">alerts</span><span class="o">.</span><span class="n">cap</span><span class="o">.</span><span class="c1">#</span>
+<span class="n">accept</span> <span class="o">.*</span>
+</pre></div>
+</div>
+<p><a class="reference external" href="https://github.com/MetPX/sarracenia/blob/master/sarra/examples/subscribe/ddc_normal.conf">https://github.com/MetPX/sarracenia/blob/master/sarra/examples/subscribe/ddc_normal.conf</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">broker</span> <span class="n">amqps</span><span class="p">:</span><span class="o">//</span><span class="n">dd</span><span class="o">.</span><span class="n">weather</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">ca</span><span class="o">/</span>
+<span class="n">subtopic</span> <span class="c1">#</span>
+<span class="n">reject</span> <span class="o">.*</span><span class="n">alerts</span><span class="o">/</span><span class="n">cap</span><span class="o">.*</span>
+<span class="n">mirror</span>
+<span class="n">directory</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">web</span>
+<span class="n">accept</span> <span class="o">.*</span>
+</pre></div>
+</div>
+<p>Where you want the mirror of the data mart to start at /data/web (presumably there is a web
+server configured do display that directory.)  Likely, the <em>ddc_normal</em> configuration
+will experience a lot of queueing, as there is a lot of data to download.  The <em>ddc_hipri.conf</em> is
+only subscribed to weather warnings in Common Alerting Protocol format, so there will be
+little to no queueing for that data.</p>
+</section>
+<section id="refining-selection">
+<h3><a class="toc-backref" href="#id8">Refining Selection</a><a class="headerlink" href="#refining-selection" title="Permalink to this headline">¶</a></h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><strong>FIXME</strong>: Make a picture, with a:</p>
+<ul class="simple">
+<li><p>broker at one end, and the subtopic apply there.</p></li>
+<li><p>client at the other end, and the accept/reject apply there.</p></li>
+</ul>
+</div>
+<p>Pick <em>subtopics</em> ( which are applied on the broker with no message downloads ) to narrow
+the number of messages that traverse the network to get to the sarracenia client processes.
+The <em>reject</em> and <em>accept</em> options are evaluated by the sr_subscriber processes themselves,
+providing regular expression based filtering of the posts which are transferred.
+<em>accept</em> operates on the actual path (well, URL), indicating what files within the
+notification stream received should actually be downloaded. Look in the <em>Downloads</em>
+line of the log file for examples of this transformed path.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Brief Introduction to Regular Expressions</p>
+<p>Regular expressions are a very powerful way of expressing pattern matches.
+They provide extreme flexibility, but in these examples we will only use a
+very trivial subset: The . is a wildcard matching any single character. If it
+is followed by an occurrence count, it indicates how many letters will match
+the pattern. the * (asterisk) character, means any number of occurrences.
+so:</p>
+<ul class="simple">
+<li><p>.* means any sequence of characters of any length. In other words, match anything.</p></li>
+<li><p>cap.* means any sequence of characters that starts with cap.</p></li>
+<li><p>.*CAP.* means any sequence of characters with CAP somewhere in it.</p></li>
+<li><p>.*cap means any sequence of characters that ends with CAP.  In case where multiple portions of the string could match, the longest one is selected.</p></li>
+<li><p>.*?cap same as above, but <em>non-greedy</em>, meaning the shortest match is chosen.</p></li>
+</ul>
+<p>Please consult various internet resources for more information on the full
+variety of matching possible with regular expressions:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/re.html">https://docs.python.org/3/library/re.html</a></p></li>
+<li><p><a class="reference external" href="https://en.wikipedia.org/wiki/Regular_expression">https://en.wikipedia.org/wiki/Regular_expression</a></p></li>
+<li><p><a class="reference external" href="http://www.regular-expressions.info/">http://www.regular-expressions.info/</a></p></li>
+</ul>
+</div>
+<p>back to sample configuration files:</p>
+<p>Note the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 edit subscribe/swob
+</pre></div>
+</div>
+<blockquote>
+<div><p>broker amqps://anonymous&#64;dd.weather.gc.ca
+accept .*/observations/swob-ml/.*</p>
+<p>#write all SWOBS into the current working directory
+#BAD: THIS IS NOT AS GOOD AS THE PREVIOUS EXAMPLE
+#     NOT having a “subtopic” and filtering with “accept” MEANS EXCESSIVE NOTIFICATIONS are processed.</p>
+</div></blockquote>
+<p>This configuration, from the subscriber point of view, will likely deliver
+the same data as the previous example. However, the default subtopic being
+a wildcard means that the server will transfer all notifications for the
+server (likely millions of them) that will be discarded by the subscriber
+process applying the accept clause. It will consume a lot more CPU and
+bandwidth on both server and client. One should choose appropriate subtopics
+to minimize the notifications that will be transferred only to be discarded.
+The <em>accept</em> (and <em>reject</em>) patterns is used to further refine <em>subtopic</em> rather
+than replace it.</p>
+<p>By default, the files downloaded will be placed in the current working
+directory when sr_subscribe was started. This can be overridden using
+the <em>directory</em> option.</p>
+<p>If downloading a directory tree, and the intent is to mirror the tree,
+then the option mirror should be set:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 edit subscribe/swob
+</pre></div>
+</div>
+<blockquote>
+<div><p>broker amqps://anonymous&#64;dd.weather.gc.ca
+subtopic observations.swob-ml.#
+directory /tmp
+mirror True
+accept .*
+#
+# instead of writing to current working directory, write to /tmp.
+# in /tmp. Mirror: create a hierarchy like the one on the source server.</p>
+</div></blockquote>
+<p>One can also intersperse <em>directory</em> and <em>accept/reject</em> directives to build
+an arbitrarily different hierarchy from what was on the source data pump.
+The configuration file is read from top to bottom, so then sr_subscribe
+finds a ‘’directory’’ option setting, only the ‘’accept’’ clauses after
+it will cause files to be placed relative to that directory:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 edit subscribe/ddi_ninjo_part1.conf
+</pre></div>
+</div>
+<blockquote>
+<div><p>broker amqps://ddi.cmc.ec.gc.ca/
+subtopic ec.ops.*.*.ninjo-a.#</p>
+<p>directory /tmp/apps/ninjo/import/point/reports/in
+accept .*ABFS_1.0.*
+accept .*AQHI_1.0.*
+accept .*AMDAR_1.0.*</p>
+<p>directory /tmp/apps/ninjo/import/point/catalog_common/in
+accept .*ninjo-station-catalogue.*</p>
+<p>directory /tmp/apps/ninjo/import/point/scit_sac/in
+accept .*~~SAC,SAC_MAXR.*</p>
+<p>directory /tmp/apps/ninjo/import/point/scit_tracker/in
+accept .*~~TRACKER,TRACK_MAXR.*</p>
+</div></blockquote>
+<p>In the above example, ninjo-station catalog data is placed in the
+catalog_common/in directory, rather than in the point data
+hierarchy used to store the data that matches the first three
+accept clauses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note that .* in the subtopic directive, where
+it means ´match any one topic´ (ie. no period characters allowed in
+topic names) has a different meaning than it does in an accept
+clause, where it means match any string.</p>
+<p>Yes, this is confusing.  No, it cannot be helped.</p>
+</div>
+</section>
+<section id="performance">
+<h3><a class="toc-backref" href="#id9">Performance</a><a class="headerlink" href="#performance" title="Permalink to this headline">¶</a></h3>
+<p>If transfers are going too slowly, the steps are as follows:</p>
+<section id="optimize-file-selection-per-process">
+<h4><a class="toc-backref" href="#id10">Optimize File Selection per Process</a><a class="headerlink" href="#optimize-file-selection-per-process" title="Permalink to this headline">¶</a></h4>
+<ul>
+<li><p>Often users specif # as their subtopic, meaning the accept/rejects do all the work. In many cases, users are only interested in a small fraction of the files being published.  For best performance, <strong>Make *subtopic* as specific as possible</strong> to have minimize sending messages that are send by the broker and arrive on the subscriber only to be rejected. (use <em>log_reject</em> option to find such products.)</p></li>
+<li><p><strong>Place *reject* statements as early as possible in the configuration</strong>. As rejection saves processing of any later regex’s in the configuration.</p></li>
+<li><p><strong>Have few accept/reject clauses</strong>: because it involves a regular expression
+match, accept/reject clauses are expensive, but evaluating a complex
+regex is not much more expensive than a simple one, so it is better to have
+a few complicated ones than many simple ones.  Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">accept</span> <span class="o">.*/</span><span class="n">SR</span><span class="o">/</span><span class="n">KWAL</span><span class="o">.*</span>
+<span class="n">accept</span> <span class="o">.*/</span><span class="n">SO</span><span class="o">/</span><span class="n">KWAL</span><span class="o">.*</span>
+</pre></div>
+</div>
+<p>will run at rougly half the speed (or double the cpu overhead) compared to</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">accept</span> <span class="o">.*/</span><span class="n">S</span><span class="p">[</span><span class="n">OR</span><span class="p">]</span><span class="o">/</span><span class="n">KWAL</span><span class="o">.*</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Use suppress_duplicates</strong>.  In some cases, there is a risk of the same file
+being announced more than once.  Usually clients do not want redundant copies
+of files transferred.  The <em>suppress_duplicates</em> option sets up a cache of
+checksums of the files which have gone by, and prevents their being processed
+again.</p></li>
+<li><p>If you are transferring small files, the built-in transfer processing is quite
+good, but <strong>if there are large files</strong> in the mix, then oflloading to a C
+binary is going to go faster. <strong>Use plugins such as accel_wget, accel_sftp,
+accel_cp</strong> (for local files.) These plugins have threshold settings so that
+the optimial python transer methods are still used for files smaller than the
+threshold.</p></li>
+<li><p><strong>increasing prefetch</strong> can reduce the average latency (being amortised over
+the number of messages prefetched.) It can improve performance over long
+distances or in high message rates within an data centre.</p></li>
+<li><p>If you control the origin of a product stream, and the consumers will want a
+very large proportion of the products announced, and the products are small
+(a few K at most), then consider combining use of v03 with inlining for
+optimal transfer of small files.  Note, if you have a wide variety of users
+who all want different data sets, inlining can be counter-productive. This
+will also result in larger messages and mean much higher load on the broker.
+It may optimize a few specific cases, while slowing the broker down overall.</p></li>
+</ul>
+</section>
+<section id="use-instances">
+<h4><a class="toc-backref" href="#id11">Use Instances</a><a class="headerlink" href="#use-instances" title="Permalink to this headline">¶</a></h4>
+<p>Once you have optimized what a single subscriber can do, if it is not fast enough,
+then use the <em>instances</em> option to have more processes participate in the
+processing.  Having 10 or 20 instances is not a problem at all.  The maximum
+number of instances that will increase performance will plateau at some point
+that varies depending on latency to broker, how fast the instances are at processing
+each file, the prefetch in use, etc…  One has to experiment.</p>
+<p>Examining instance logs, if they seem to be waiting for messages for a long time,
+not actually doing any transfer, then one might have reached queue saturation.
+This often happens at around 40 to 75 instances. Rabbitmq manages a single queue
+with a single CPU, and there is a limit to how many messages a queue can process
+in a given unit of time.</p>
+<p>If the queue becomes saturated, then we need to partition the subscriptions
+into multiple configurations.  Each configuration will have a separate queue,
+and the queues will get their own CPU’s.  With such partitioning, we have gone
+to a hundred or so instances and not seen saturation.  We don’t know when we run
+out of performance.</p>
+<p>We haven’t needed to scale the broker itself yet.</p>
+</section>
+<section id="high-performance-duplicate-suppression">
+<h4><a class="toc-backref" href="#id12">High Performance Duplicate Suppression</a><a class="headerlink" href="#high-performance-duplicate-suppression" title="Permalink to this headline">¶</a></h4>
+<p>One caveat to the use of <em>instances</em> is that <em>suppress_duplicates</em> is ineffective
+as the different occurrences of the same file will not be received by the same
+instance, and so with n instances, roughly n-1/n duplicates will slip through.</p>
+<p>In order to properly suppress duplicate file announcements in data streams
+that need multiple instances, one uses winnowing with <em>post_exchange_split</em>.
+This option sends data to multiple post exchanges based on the data checksum,
+so that all duplicate files will be routed to the same winnow process.
+Each winnow process runs the normal duplicate suppression used in single instances,
+since all files with the same checksum end up with the same winnow, it works.
+The winnow processes then post to the exchange used by the real processing
+pools.</p>
+<p>Why is high performance duplicate suppresion a good thing? Because the
+availability model of Sarracenia is to have individual application stacks
+blindly produce redudant copies of products. It requires no application
+adjustment from single node to participating in a cluster.  Sarracenia
+selects the first result we receive for forwarding. This avoids any sort
+of quorum protocol, a source if great complexity in high availability
+schemes, and by measuring based on output, minimizes the potential for
+systems to appear up, when not actually being completely functional. The
+applications do not need to know that there is another stack producing the same
+products, which simplifies them as well.</p>
+</section>
+</section>
+<section id="plugins">
+<h3><a class="toc-backref" href="#id13">Plugins</a><a class="headerlink" href="#plugins" title="Permalink to this headline">¶</a></h3>
+<p>Default file processing is often fine, but there are also pre-built customizations that
+can be used to change processing done by components. The list of pre-built plugins is
+in a ‘plugins’ directory wherever the package is installed (viewable with <em>sr_subscribe list</em>)
+sample output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr_subscribe list
+
+  packaged plugins: ( /usr/lib/python3/dist-packages/sarra/plugins )
+           __pycache__     destfn_sample.py       download_cp.py       download_dd.py
+       download_scp.py     download_wget.py          file_age.py        file_check.py
+           file_log.py       file_rxpipe.py        file_total.py          hb_cache.py
+             hb_log.py         hb_memory.py          hb_pulse.py         html_page.py
+           line_log.py         line_mode.py         msg_2http.py        msg_2local.py
+     msg_2localfile.py     msg_auditflow.py     msg_by_source.py       msg_by_user.py
+          msg_delay.py        msg_delete.py      msg_download.py          msg_dump.py
+         msg_fdelay.py msg_filter_wmo2msc.py  msg_from_cluster.py     msg_hour_tree.py
+            msg_log.py     msg_print_lag.py   msg_rename4jicc.py    msg_rename_dmf.py
+  msg_rename_whatfn.py       msg_renamer.py msg_replace_new_dir.py          msg_save.py
+       msg_skip_old.py        msg_speedo.py msg_sundew_pxroute.py    msg_test_retry.py
+    msg_to_clusters.py         msg_total.py        part_check.py  part_clamav_scan.py
+         poll_pulse.py       poll_script.py    post_hour_tree.py          post_log.py
+     post_long_flow.py     post_override.py   post_rate_limit.py        post_total.py
+          watch_log.py
+  configuration examples: ( /usr/lib/python3/dist-packages/sarra/examples/subscribe )
+              all.conf     all_but_cap.conf            amis.conf            aqhi.conf
+              cap.conf      cclean_f91.conf       cdnld_f21.conf       cfile_f44.conf
+         citypage.conf           clean.conf       clean_f90.conf            cmml.conf
+  cscn22_bulletins.conf         ftp_f70.conf            gdps.conf         ninjo-a.conf
+            q_f71.conf           radar.conf            rdps.conf            swob.conf
+            t_f30.conf      u_sftp_f60.conf
+
+  user plugins: ( /home/peter/.config/sr3/plugins )
+          destfn_am.py         destfn_nz.py       msg_tarpush.py
+
+  general: ( /home/peter/.config/sr3 )
+            admin.conf     credentials.conf         default.conf
+
+  user configurations: ( /home/peter/.config/sr3/subscribe )
+       cclean_f91.conf       cdnld_f21.conf       cfile_f44.conf       clean_f90.conf
+          ftp_f70.conf           q_f71.conf           t_f30.conf      u_sftp_f60.conf
+
+$
+</pre></div>
+</div>
+<p>For all plugins, the prefix indicates how the plugin is to be used: a file_ plugin is
+to be used with <em>on_file</em>, <em>Msg_</em> plugins are to be used with on_message, etc…
+When plugins have options, the options must be placed before the plugin declaration
+in the configuration file. Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">msg_total_interval</span> <span class="mi">5</span>
+<span class="n">on_message</span> <span class="n">msg_total</span>
+</pre></div>
+</div>
+<p>The <em>msg_total</em> plugin is invoked whenever a message is received, and the <em>msg_total_interval</em>
+option, used by that plugin, has been set to 5. To learn more: <em>sr_subscribe list msg_total.py</em></p>
+<p>Plugins are all written in python, and users can create their own and place them in ~/.config/sr3/plugins.
+For information on creating new custom plugins, see The <a class="reference external" href="../Contribution/Development.rst">Sarracenia Programming Guide</a></p>
+<p>To recap:</p>
+<ul class="simple">
+<li><p>To view the plugins currently available on the system  <em>sr_subscribe list plugins</em></p></li>
+<li><p>To view the contents of a plugin: <em>sr_subscribe list &lt;plugin&gt;</em></p></li>
+<li><p>The beginning of the plugin describes its function and settings</p></li>
+<li><p>Plugins can have option settings, just like built-in ones</p></li>
+<li><p>To set them, place the options in the configuration file before the plugin call itself</p></li>
+<li><p>To make your own new plugin: <em>sr3 edit subscribe/&lt;plugin&gt;.py</em></p></li>
+</ul>
+</section>
+<section id="file-rxpipe">
+<h3><a class="toc-backref" href="#id14">file_rxpipe</a><a class="headerlink" href="#file-rxpipe" title="Permalink to this headline">¶</a></h3>
+<p>The file_rxpipe plugin for sr_subscribe makes all the instances write the names
+of files downloaded to a named pipe. Setting this up required two lines in
+an sr_subscribe configuration file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr3 edit subscribe/swob
+</pre></div>
+</div>
+<blockquote>
+<div><p>broker amqps://anonymous&#64;dd.weather.gc.ca
+subtopic observations.swob-ml.#</p>
+<p>file_rxpipe_name /home/peter/test/.rxpipe
+on_file file_rxpipe
+directory /tmp
+mirror True
+accept .*
+# rxpipe is a builtin on_file plugin which writes the name of the file received to
+# a pipe named ‘.rxpipe’ in the current working directory.</p>
+</div></blockquote>
+<p>With the <em>on_file</em> option, one can specify a processing option such as rxpipe.
+With rxpipe, every time a file transfer has completed and is ready for
+post-processing, its name is written to the linux pipe (named .rxpipe) in the
+current working directory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In the case where a large number of sr_subscribe instances are working
+On the same configuration, there is slight probability that notifications
+may corrupt one another in the named pipe.</p>
+<p><strong>FIXME</strong> We should probably verify whether this probability is negligeable or not.</p>
+</div>
+</section>
+<section id="anti-virus-scanning">
+<h3><a class="toc-backref" href="#id15">Anti-Virus Scanning</a><a class="headerlink" href="#anti-virus-scanning" title="Permalink to this headline">¶</a></h3>
+<p>Another example of easy use of a plugin is to achieve anti-virus scanning.
+Assuming that ClamAV is installed, as well as the python3-pyclamd
+package, then one can add the following to an sr_subscribe
+configuration file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">broker</span> <span class="n">amqps</span><span class="p">:</span><span class="o">//</span><span class="n">dd</span><span class="o">.</span><span class="n">weather</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">ca</span>
+<span class="n">on_part</span> <span class="n">part_clamav_scan</span><span class="o">.</span><span class="n">py</span>
+<span class="n">subtopic</span> <span class="n">observations</span><span class="o">.</span><span class="n">swob</span><span class="o">-</span><span class="n">ml</span><span class="o">.</span><span class="c1">#</span>
+<span class="n">accept</span> <span class="o">.*</span>
+</pre></div>
+</div>
+<p>so that each file downloaded (or each part of the file if it is large),
+is to be AV scanned. Sample run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr_subscribe --reset foreground ../dd_swob.conf
+</pre></div>
+</div>
+<blockquote>
+<div><p>clam_scan on_part plugin initialized
+clam_scan on_part plugin initialized
+2016-05-07 18:01:15,007 [INFO] sr_subscribe start
+2016-05-07 18:01:15,007 [INFO] sr_subscribe run
+2016-05-07 18:01:15,007 [INFO] AMQP  broker(dd.weather.gc.ca) user(anonymous) vhost(/)
+2016-05-07 18:01:15,137 [INFO] Binding queue q_anonymous.sr_subscribe.dd_swob.13118484.63321617 with key v02.post.observations.swob-ml.# from exchange xpublic on broker amqps://anonymous&#64;dd.weather.gc.ca/
+2016-05-07 18:01:15,846 [INFO] Received notice  20160507220115.632 http://dd3.weather.gc.ca/ observations/swob-ml/20160507/CYYR/2016-05-07-2200-CYYR-MAN-swob.xml
+2016-05-07 18:01:15,911 [INFO] 201 Downloaded : v02.report.observations.swob-ml.20160507.CYYR 20160507220115.632 http://dd3.weather.gc.ca/ observations/swob-ml/20160507/CYYR/2016-05-07-2200-CYYR-MAN-swob.xml 201 blacklab anonymous 0.258438 parts=1,4349,1,0,0 sum=d,399e3d9119821a30d480eeee41fe7749 from_cluster=DD source=metpx to_clusters=DD,DDI.CMC,DDI.EDM rename=./2016-05-07-2200-CYYR-MAN-swob.xml message=Downloaded
+2016-05-07 18:01:15,913 [INFO] part_clamav_scan took 0.00153089 seconds, no viruses in ./2016-05-07-2200-CYYR-MAN-swob.xml
+2016-05-07 18:01:17,544 [INFO] Received notice  20160507220117.437 http://dd3.weather.gc.ca/ observations/swob-ml/20160507/CVFS/2016-05-07-2200-CVFS-AUTO-swob.xml
+2016-05-07 18:01:17,607 [INFO] 201 Downloaded : v02.report.observations.swob-ml.20160507.CVFS 20160507220117.437 http://dd3.weather.gc.ca/ observations/swob-ml/20160507/CVFS/2016-05-07-2200-CVFS-AUTO-swob.xml 201 blacklab anonymous 0.151982 parts=1,7174,1,0,0 sum=d,a8b14bd2fa8923fcdb90494f3c5f34a8 from_cluster=DD source=metpx to_clusters=DD,DDI.CMC,DDI.EDM rename=./2016-05-07-2200-CVFS-AUTO-swob.xml message=Downloaded</p>
+</div></blockquote>
+</section>
+<section id="logging-and-debugging">
+<h3><a class="toc-backref" href="#id16">Logging and Debugging</a><a class="headerlink" href="#logging-and-debugging" title="Permalink to this headline">¶</a></h3>
+<p>As sr3 components usually run as a daemon (unless invoked in <em>foreground</em> mode)
+one normally examines its log file to find out how processing is going.  When only
+a single instance is running, one can view the log of the running process like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sr3</span> <span class="n">log</span> <span class="n">subscribe</span><span class="o">/*</span><span class="n">myconfig</span><span class="o">*</span>
+</pre></div>
+</div>
+<p>FIXME: not implemented properly. normally use “foreground” command instead.</p>
+<p>Where <em>myconfig</em> is the name of the running configuration. Log files
+are placed as per the XDG Open Directory Specification. There will be a log file
+for each <em>instance</em> (download process) of an sr_subscribe process running the myflow configuration:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ow">in</span> <span class="n">linux</span><span class="p">:</span> <span class="o">~/.</span><span class="n">cache</span><span class="o">/</span><span class="n">sarra</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">sr_subscribe_myflow_01</span><span class="o">.</span><span class="n">log</span>
+</pre></div>
+</div>
+<p>One can override placement on linux by setting the XDG_CACHE_HOME environment variable, as
+per: <a class="reference external" href="https://specifications.freedesktop.org/basedir-spec/basedir-spec-0.6.html">XDG Open Directory Specification</a>
+Log files can be very large for high volume configurations, so the logging is very configurable.</p>
+<p>To begin with, one can select the logging level throughout the entire application using
+logLevel, and logReject:</p>
+<ul>
+<li><dl class="simple">
+<dt>debug</dt><dd><p>Setting option debug is identical to use  <strong>logLevel debug</strong></p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>logLevel ( default: info )</dt><dd><p>The level of logging as expressed by python’s logging. Possible values are :  critical, error, info, warning, debug.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt>log_reject &lt;True|False&gt; ( default: False )</dt><dd><p>print a log message when <em>rejecting</em> messages (choosing not to download the corresponding files)</p>
+<p>The rejection messages also indicate the reason for the rejection.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>At the end of the day (at midnight), these logs are rotated automatically by
+the components, and the old log gets a date suffix. The directory in which
+the logs are stored can be overridden by the <strong>log</strong> option, the number of
+rotated logs to keep are set by the <strong>logrotate</strong> parameter. The oldest log
+file is deleted when the maximum number of logs has been reach and this
+continues for each rotation. An interval takes a duration of the interval and
+it may takes a time unit suffix, such as ‘d|D’ for days, ‘h|H’ for hours,
+or ‘m|M’ for minutes. If no unit is provided logs will rotate at midnight.
+Here are some settings for log file management:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>log &lt;dir&gt; ( default: ~/.cache/sarra/log ) (on Linux)</dt><dd><p>The directory to store log files in.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>statehost &lt;False|True&gt; ( default: False )</dt><dd><p>In large data centres, the home directory can be shared among thousands of
+nodes. Statehost adds the node name after the cache directory to make it
+unique to each node. So each node has it’s own statefiles and logs.
+example, on a node named goofy,  ~/.cache/sarra/log/ becomes ~/.cache/sarra/goofy/log.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>logrotate &lt;max_logs&gt; ( default: 5 , alias: lr_backupCount)</dt><dd><p>Maximum number of logs archived.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>logrotate_interval &lt;duration&gt;[&lt;time_unit&gt;] ( default: 1, alias: lr_interval)</dt><dd><p>The duration of the interval with an optional time unit (ie 5m, 2h, 3d)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>permLog ( default: 0600 )</dt><dd><p>The permission bits to set on log files.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<section id="flowcb-log-py-debug-tuning">
+<h4><a class="toc-backref" href="#id17">flowcb/log.py Debug Tuning</a><a class="headerlink" href="#flowcb-log-py-debug-tuning" title="Permalink to this headline">¶</a></h4>
+<p>In addition to application-options, there is a flowcb that is used by default for logging, which
+has additional options:</p>
+<ul class="simple">
+<li><p>logMessageDump  (default: off) boolean flag
+If set, all fields of a message are printed, at each event, rather than just a url/path reference.</p></li>
+<li><dl class="simple">
+<dt>logEvents ( default after_accept,after_work,on_housekeeping )</dt><dd><p>emit standard log messages at the given points in message processing.
+other values: on_start, on_stop, post, gather, … etc…</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>etc… One can also modify the provided plugins, or write new ones to completely change the logging.</p>
+</section>
+<section id="moth-debug-tuning">
+<h4><a class="toc-backref" href="#id18">moth Debug Tuning</a><a class="headerlink" href="#moth-debug-tuning" title="Permalink to this headline">¶</a></h4>
+<p>Turning on logLevel to debug on the entire application often results in inordinately large log files.
+By default the Messages Organized into Topic Hierarchies (Moth) parent class for the messaging protocols,
+ignores the application-wide debug option.  To enable debugging output from these classes, there
+are additional settings.</p>
+<p>One can explicitly set the debug option specifically for the messaging protocol class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span> <span class="n">sarracenia</span><span class="o">.</span><span class="n">moth</span><span class="o">.</span><span class="n">amqp</span><span class="o">.</span><span class="n">AMQP</span><span class="o">.</span><span class="n">logLevel</span> <span class="n">debug</span>
+<span class="nb">set</span> <span class="n">sarracenia</span><span class="o">.</span><span class="n">moth</span><span class="o">.</span><span class="n">mqtt</span><span class="o">.</span><span class="n">MQTT</span><span class="o">.</span><span class="n">logLevel</span> <span class="n">debug</span>
+</pre></div>
+</div>
+<p>will make the messaging layer very verbose.
+Sometimes during interoperability testing, one must see the raw messages, before decoding by moth classes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">messageDebugDump</span>
+</pre></div>
+</div>
+<p>Either or both of these options will make very large logs, and are best used judiciously.</p>
+</section>
+</section>
+<section id="speedo-metrics">
+<h3><a class="toc-backref" href="#id19">Speedo Metrics</a><a class="headerlink" href="#speedo-metrics" title="Permalink to this headline">¶</a></h3>
+<p>Activating the speedo plugin lets one understand how much bandwidth
+and how many messages per second a given set of selection criteria
+result in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">broker</span> <span class="n">amqps</span><span class="p">:</span><span class="o">//</span><span class="n">dd</span><span class="o">.</span><span class="n">weather</span><span class="o">.</span><span class="n">gc</span><span class="o">.</span><span class="n">ca</span>
+<span class="n">on_message</span> <span class="n">msg_speedo</span>
+<span class="n">subtopic</span> <span class="n">observations</span><span class="o">.</span><span class="n">swob</span><span class="o">-</span><span class="n">ml</span><span class="o">.</span><span class="c1">#</span>
+<span class="n">accept</span> <span class="o">.*</span>
+</pre></div>
+</div>
+<p>Gives lines in the log like so:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr_subscribe --reset foreground ../dd_swob.conf
+</pre></div>
+</div>
+<blockquote>
+<div><p>2016-05-07 18:05:52,097 [INFO] sr_subscribe start
+2016-05-07 18:05:52,097 [INFO] sr_subscribe run
+2016-05-07 18:05:52,097 [INFO] AMQP  broker(dd.weather.gc.ca) user(anonymous) vhost(/)
+2016-05-07 18:05:52,231 [INFO] Binding queue q_anonymous.sr_subscribe.dd_swob.13118484.63321617 with key v02.post.observations.swob-ml.# from exchange xpublic on broker amqps://anonymous&#64;dd.weather.gc.ca/
+2016-05-07 18:05:57,228 [INFO] speedo:   2 messages received:  0.39 msg/s, 2.6K bytes/s, lag: 0.26 s</p>
+</div></blockquote>
+</section>
+<section id="partial-file-updates">
+<h3><a class="toc-backref" href="#id20">Partial File Updates</a><a class="headerlink" href="#partial-file-updates" title="Permalink to this headline">¶</a></h3>
+<p>When files are large, they are divided into parts. Each part is transferred
+separately by sr_sarracenia. So when a large file is updated, new part
+notifications (posts) are created. sr_subscribe will check if the file on
+disk matches the new part by checksumming the local data and comparing
+that to the post. If they do not match, then the new part of the file
+will be downloaded.</p>
+</section>
+<section id="redundant-file-reception">
+<h3><a class="toc-backref" href="#id21">Redundant File Reception</a><a class="headerlink" href="#redundant-file-reception" title="Permalink to this headline">¶</a></h3>
+<p>In environments where high reliability is required, multiple servers
+are often configured to provide services. The Sarracenia approach to
+high availability is ´Active-Active´ in that all sources are online
+and producing data in parallel. Each source publishes data,
+and consumers obtain it from the first source that makes it available,
+using checksums to determine whether the given datum has been obtained
+or not.</p>
+<p>This filtering requires implementation of a local dataless pump with
+sr_winnow. See the Administrator Guide for more information.</p>
+</section>
+<section id="web-proxies">
+<h3><a class="toc-backref" href="#id22">Web Proxies</a><a class="headerlink" href="#web-proxies" title="Permalink to this headline">¶</a></h3>
+<p>The best method of working with web proxies is to put the following
+in the default.conf:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">declare</span> <span class="n">env</span> <span class="n">HTTP_PROXY</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">yourproxy</span><span class="o">.</span><span class="n">com</span>
+<span class="n">declare</span> <span class="n">env</span> <span class="n">HTTPS_PROXY</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">yourproxy</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>Putting in default.conf ensures that all subscribers will use
+the proxy, not just a single configuration.</p>
+</section>
+<section id="more-information">
+<h3><a class="toc-backref" href="#id23">More Information</a><a class="headerlink" href="#more-information" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="../Reference/sr3.1.rst#subscribe">sr_subscribe(1)</a> is the definitive source of reference
+information for configuration options. For additional information,
+consult: <a class="reference external" href="../Reference/sr3.1.rst#documentation">Sarracenia Documentation</a></p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Subscriber Guide</a><ul>
+<li><a class="reference internal" href="#receiving-data-from-a-metpx-sarracenia-data-pump">Receiving Data from a MetPX-Sarracenia Data Pump</a><ul>
+<li><a class="reference internal" href="#revision-record">Revision Record</a></li>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#server-side-resources-allocated-for-subscribers">Server Side Resources Allocated for Subscribers</a></li>
+<li><a class="reference internal" href="#working-with-multiple-configurations">Working with Multiple Configurations</a></li>
+<li><a class="reference internal" href="#high-priority-delivery">High Priority Delivery</a></li>
+<li><a class="reference internal" href="#refining-selection">Refining Selection</a></li>
+<li><a class="reference internal" href="#performance">Performance</a><ul>
+<li><a class="reference internal" href="#optimize-file-selection-per-process">Optimize File Selection per Process</a></li>
+<li><a class="reference internal" href="#use-instances">Use Instances</a></li>
+<li><a class="reference internal" href="#high-performance-duplicate-suppression">High Performance Duplicate Suppression</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plugins">Plugins</a></li>
+<li><a class="reference internal" href="#file-rxpipe">file_rxpipe</a></li>
+<li><a class="reference internal" href="#anti-virus-scanning">Anti-Virus Scanning</a></li>
+<li><a class="reference internal" href="#logging-and-debugging">Logging and Debugging</a><ul>
+<li><a class="reference internal" href="#flowcb-log-py-debug-tuning">flowcb/log.py Debug Tuning</a></li>
+<li><a class="reference internal" href="#moth-debug-tuning">moth Debug Tuning</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#speedo-metrics">Speedo Metrics</a></li>
+<li><a class="reference internal" href="#partial-file-updates">Partial File Updates</a></li>
+<li><a class="reference internal" href="#redundant-file-reception">Redundant File Reception</a></li>
+<li><a class="reference internal" href="#web-proxies">Web Proxies</a></li>
+<li><a class="reference internal" href="#more-information">More Information</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/How2Guides/subscriber.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Subscriber Guide</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,1079 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>SR_post &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SR_post</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sr-post">
+<h1><a class="toc-backref" href="#id2">SR_post</a><a class="headerlink" href="#sr-post" title="Permalink to this headline">¶</a></h1>
+<section id="sarracenia-v03-post-message-format-protocol">
+<h2><a class="toc-backref" href="#id3">Sarracenia v03 Post Message Format/Protocol</a><a class="headerlink" href="#sarracenia-v03-post-message-format-protocol" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Manual section</dt>
+<dd class="field-odd"><p>7</p>
+</dd>
+<dt class="field-even">Date</dt>
+<dd class="field-even"><p>&#64;Date&#64;</p>
+</dd>
+<dt class="field-odd">Version</dt>
+<dd class="field-odd"><p>&#64;Version&#64;</p>
+</dd>
+<dt class="field-even">Manual group</dt>
+<dd class="field-even"><p>MetPX-Sarracenia</p>
+</dd>
+</dl>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#sr-post" id="id2">SR_post</a></p>
+<ul>
+<li><p><a class="reference internal" href="#sarracenia-v03-post-message-format-protocol" id="id3">Sarracenia v03 Post Message Format/Protocol</a></p>
+<ul>
+<li><p><a class="reference internal" href="#status-experimental" id="id4">STATUS: EXPERIMENTAL</a></p></li>
+<li><p><a class="reference internal" href="#synopsis" id="id5">SYNOPSIS</a></p>
+<ul>
+<li><p><a class="reference internal" href="#amqp-topic-version-post-report-dir" id="id6"><strong>AMQP Topic:</strong> <em>&lt;version&gt;.[post|report].{&lt;dir&gt;.}</em></a></p></li>
+<li><p><a class="reference internal" href="#body-headers-json-encoding" id="id7"><strong>BODY:</strong> <em>{ &lt;headers&gt; }</em> (JSON encoding.)</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#description" id="id8">DESCRIPTION</a></p></li>
+<li><p><a class="reference internal" href="#topic" id="id9">TOPIC</a></p>
+<ul>
+<li><p><a class="reference internal" href="#mapping-to-mqtt" id="id10">Mapping to MQTT</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#the-fixed-headers" id="id11">THE FIXED HEADERS</a></p>
+<ul>
+<li><p><a class="reference internal" href="#from-cluster-cluster-name" id="id12"><strong>from_cluster=&lt;cluster_name&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#link-value-of-symbolic-link" id="id13"><strong>link=&lt;value of symbolic link&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#parts" id="id14"><strong>Parts</strong></a></p></li>
+<li><p><a class="reference internal" href="#rename-relpath" id="id15"><strong>rename=&lt;relpath&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#oldname-path-newname-path" id="id16"><strong>oldname=&lt;path&gt;</strong> / <strong>newname=&lt;path&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#source-sourceid" id="id17"><strong>source=&lt;sourceid&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#sum-method-value" id="id18"><strong>sum=&lt;method&gt;,&lt;value&gt;</strong></a></p></li>
+<li><p><a class="reference internal" href="#integrity" id="id19"><strong>integrity</strong></a></p></li>
+<li><p><a class="reference internal" href="#to-clusters-cluster-name1-cluster-name2" id="id20"><strong>to_clusters=&lt;cluster_name1,cluster_name2,…&gt;</strong></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#report-messages" id="id21">Report Messages</a></p>
+<ul>
+<li><p><a class="reference internal" href="#report-code" id="id22">Report_Code</a></p></li>
+<li><p><a class="reference internal" href="#other-report-fields" id="id23">Other Report Fields</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#optional-headers" id="id24">Optional Headers</a></p>
+<ul>
+<li><p><a class="reference internal" href="#atime-mtime-mode" id="id25"><strong>atime,mtime,mode</strong></a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#example" id="id26">EXAMPLE</a></p></li>
+<li><p><a class="reference internal" href="#another-example" id="id27">Another example</a></p></li>
+<li><p><a class="reference internal" href="#metpx-sarracenia" id="id28">MetPX-Sarracenia</a></p>
+<ul>
+<li><p><a class="reference internal" href="#v02" id="id29">v02</a></p></li>
+<li><p><a class="reference internal" href="#changes-from-v02" id="id30">Changes from v02</a></p></li>
+<li><p><a class="reference internal" href="#optimization-possibilities" id="id31">Optimization Possibilities</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#amqp-feature-selection" id="id32">AMQP Feature Selection</a></p>
+<ul>
+<li><p><a class="reference internal" href="#analogy-ftp" id="id33">Analogy FTP</a></p></li>
+<li><p><a class="reference internal" href="#amqp-not-1-0-but-0-8-or-0-9" id="id34">AMQP: not 1.0, but 0.8 or 0.9</a></p></li>
+<li><p><a class="reference internal" href="#named-exchanges-and-queues" id="id35">Named Exchanges and Queues</a></p></li>
+<li><p><a class="reference internal" href="#topic-based-exchanges" id="id36">Topic-based Exchanges</a></p></li>
+<li><p><a class="reference internal" href="#little-data" id="id37">Little Data</a></p></li>
+<li><p><a class="reference internal" href="#other-parameters" id="id38">Other Parameters</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#standards" id="id39">Standards</a></p></li>
+<li><p><a class="reference internal" href="#further-reading" id="id40">FURTHER READING</a></p></li>
+<li><p><a class="reference internal" href="#see-also" id="id41">SEE ALSO</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="status-experimental">
+<h3><a class="toc-backref" href="#id4">STATUS: EXPERIMENTAL</a><a class="headerlink" href="#status-experimental" title="Permalink to this headline">¶</a></h3>
+<p>Sarracenia version 2 messages are the current standard, used for terabytes
+and millions of files per day of transfers. Version 3 is a proposal for a next
+iteration of Sarracenia messages, but it is not fully implemented, and
+not in use anywhere, and may never be used. It is also not frozen yet
+and subject to change.</p>
+<p>Most fields and their meaning is the same in version 3 as it was in version 2.
+Some fields are changing as the protocol is exposed to wider review than previously.
+It is implementing changes the <a class="reference external" href="www.wmo.int">World Meteorological Organization</a>
+for use in a renewed <a class="reference external" href="http://www.wmo.int/pages/prog/www/WIS/">WIS/Global Telecommunications System</a>
+This format will track work done in the <a class="reference external" href="https://www.github.com/MetPX/wmo_mesh">WMO mesh</a></p>
+<p>The change in payload protocol is targetted at simplifying future implementations
+and enabling use by messaging protocols other than pre-1.0 AMQP.
+See <a class="reference internal" href="#changes-from-v02">Changes from v02</a> for more details.</p>
+<p>To generate messages in v03 format, use following setting:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">post_topicPrefix</span> <span class="n">v03</span>
+</pre></div>
+</div>
+<p>To select messages to consume in that format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">topicPrefix</span> <span class="n">v03</span>
+</pre></div>
+</div>
+</section>
+<section id="synopsis">
+<h3><a class="toc-backref" href="#id5">SYNOPSIS</a><a class="headerlink" href="#synopsis" title="Permalink to this headline">¶</a></h3>
+<p>Version 03 format of file change announcements for sr_post.</p>
+<p>An sr_post message consists of a topic, and the <em>BODY</em></p>
+<section id="amqp-topic-version-post-report-dir">
+<h4><a class="toc-backref" href="#id6"><strong>AMQP Topic:</strong> <em>&lt;version&gt;.[post|report].{&lt;dir&gt;.}</em></a><a class="headerlink" href="#amqp-topic-version-post-report-dir" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">version</span><span class="o">&gt;</span> <span class="o">=</span> <span class="s2">&quot;v03&quot;</span> <span class="n">the</span> <span class="n">version</span> <span class="n">of</span> <span class="n">the</span> <span class="n">protocol</span> <span class="ow">or</span> <span class="nb">format</span><span class="o">.</span>
+<span class="s2">&quot;post&quot;</span> <span class="o">=</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">message</span> <span class="n">within</span> <span class="n">the</span> <span class="n">protocol</span><span class="o">.</span>
+<span class="o">&lt;</span><span class="nb">dir</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">a</span> <span class="n">sub</span><span class="o">-</span><span class="n">directory</span> <span class="n">leading</span> <span class="n">to</span> <span class="n">the</span> <span class="n">file</span> <span class="p">(</span><span class="n">perhaps</span> <span class="n">many</span> <span class="n">directories</span> <span class="n">deep</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="body-headers-json-encoding">
+<h4><a class="toc-backref" href="#id7"><strong>BODY:</strong> <em>{ &lt;headers&gt; }</em> (JSON encoding.)</a><a class="headerlink" href="#body-headers-json-encoding" title="Permalink to this headline">¶</a></h4>
+<p>The headers are an array of name:value pairs:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>MANDATORY:
+
+        &quot;pubTime&quot;       - YYYYMMDDTHHMMSS.ss - UTC date/timestamp.
+        &quot;baseUrl&quot;       - root of the url to download.
+        &quot;relPath&quot;       - relative path can be catenated to &lt;base_url&gt;
+        &quot;integrity&quot;     - WMO version of v02 sum field, under development.
+        {
+           &quot;method&quot; : &quot;md5&quot; | &quot;sha512&quot; | &quot;md5name&quot; | &quot;link&quot; | &quot;remove&quot; | &quot;cod&quot; | &quot;random&quot; ,
+           &quot;value&quot;  : &quot;base64 encoded checksum value&quot;
+        }
+
+OPTIONAL:
+
+        &quot;size&quot;          - the number of bytes being advertised.
+        &quot;blocks&quot;        - if the file being advertised is partitioned, then:
+        {
+            &quot;method&quot;    : &quot;inplace&quot; | &quot;partitioned&quot; , - is the file already in parts?
+            &quot;size&quot;      : &quot;9999&quot;, - size of the blocks.
+            &quot;count&quot;     : &quot;9999&quot;, - number of blocks in the file.
+            &quot;remainder&quot; : &quot;9999&quot;, - the size of the last block.
+            &quot;number&quot;    : &quot;9999&quot;, - which block is this.
+        }
+        &quot;rename&quot;        - name to write file locally.
+        &quot;topic&quot;         - copy of topic from AMQP header (usually omitted)
+        &quot;source&quot;        - the originating entity of the message.
+        &quot;from_cluster&quot;  - the originating cluster of a message.
+        &quot;to_clusters&quot;   - a destination specification.
+        &quot;link&quot;          - value of a symbolic link. (if sum starts with L)
+        &quot;atime&quot;         - last access time of a file (optional)
+        &quot;mtime&quot;         - last modification time of a file (optional)
+        &quot;mode&quot;          - permission bits (optional)
+
+        &quot;content&quot;       - for smaller files, the content may be embedded.
+        {
+            &quot;encoding&quot; : &quot;utf-8&quot; | &quot;base64&quot;  ,
+            &quot;value&quot;    &quot; &quot;encoded file content&quot;
+        }
+
+        For &quot;v03.report&quot; topic messages the following addtional
+        headers will be present:
+
+        &quot;report&quot; { &quot;code&quot;: 999  - HTTP style response code.
+                   &quot;message&quot; :  - status report message documented in `Report Messages`_
+                 }
+
+        additional user defined name:value pairs are permitted.
+</pre></div>
+</div>
+<dl class="simple">
+<dt>NOTE:</dt><dd><p>The <strong>parts</strong> header has not yet been reviewed by others. We started on the discussion of <em>size</em>,
+but there was no conclusion.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="description">
+<h3><a class="toc-backref" href="#id8">DESCRIPTION</a><a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h3>
+<p>Sources create messages in the <em>sr_post</em> format to announce file changes. Subscribers
+read the post to decide whether a download of the content being announced is warranted.  This
+manual page completely describes the format of those messages.  The messages are payloads
+for an Advanced Message Queuing Protocol (AMQP) message bus, but file data transport
+is separate, using more common protocols such as SFTP, HTTP, HTTPS, or FTP (or other?).
+Files are transported as pure byte streams, no metadata beyond the file contents is
+transported (permission bits, extended attributes, etc…). Permissions of files
+on the destination system are upto the receiver to decide.</p>
+<p>With this method, AMQP messages provide a ‘control plane’ for data transfers.  While each post message
+is essentially point to point, data pumps can be transitively linked together to make arbitrary
+networks.  Each posting is consumed by the next hop in the chain. Each hop re-advertises
+(creates a new post for) the data for later hops.  The posts flow in the same direction as the
+data.  If consumers permit it, report messages (see sr_report(7)) also flow through the control path,
+but in the opposite direction, allowing sources to know the entire disposition of their
+files through a network.</p>
+<p>The minimal layer over raw AMQP provides more complete file transfer functionality:</p>
+<dl>
+<dt>Source Filtering (use of <a class="reference internal" href="#topic">TOPIC</a> exchanges)</dt><dd><p>The messages make use of <em>topic exchanges</em> from AMQP, where topics are hierarchies
+meant to represent subjects of interest to a consumer. A consumer may upload the
+selection criteria to the broker so that only a small subset of postings
+are forwarded to the client.  When there are many users interested in only
+small subsets of data, the savings in traffic are large.</p>
+</dd>
+<dt>Fingerprint Winnowing (use of the <a class="reference internal" href="#integrity">integrity</a> header)</dt><dd><p>Each product has an integrity fingerprint and size intended to identify it uniquely,
+referred to as a <em>fingerprint</em>. If two files have the same fingerprint, they
+are considered equivalent. In cases where multiple sources of equivalent data are
+available but downstream consumers would prefer to receive single announcements
+of files, intermediate processes may elect to publish notifications of the first
+product with a given fingerprint, and ignore subsequent ones.
+Propagating only the first occurrence of a datum received downstream, based on
+its fingerprint, is termed: <em>Fingerprint Winnowing</em>.</p>
+<p><em>Fingerprint Winnowing</em> is the basis for a robust strategy for high availability: setting up
+multiple sources for the same data, consumers accept announcements from all of them, but only
+forwarding the first one received downstream. In normal operation, one source may be faster
+than the others, and so the other sources’ files are usually ‘winnowed’. When one source
+disappears, the other sources’ data is automatically selected, as the fingerprints
+are now <em>fresh</em> and used, until a faster source becomes available.</p>
+<p>The advantage of this method for high availability is that no A/B decision is required.
+The time to <em>switchover</em> is zero. Other strategies are subject to considerable delays
+in making the decision to switchover, and pathologies one could summarize as flapping,
+and/or deadlocks.</p>
+<p><em>Fingerprint Winnowing</em> also permits <em>mesh-like</em>, or <em>any to any</em> networks, where one simply
+interconnects a node with others, and messages propagate. Their specific path through the
+network is not defined, but each participant will download each new datum from the first
+node that makes it available to them. Keeping the messages small and separate from data
+is optimal for this usage.</p>
+</dd>
+<dt>Partitioning (use of the <a class="reference internal" href="#id1">parts</a> Header)</dt><dd><p>In any store and forward data pumping network that transports entire files limits the maximum
+file size to the minimum available on any intervening node. To avoid defining a maximum
+file size, a segmentation standard is specified, allowing intervening nodes to hold
+only segments of the file, and forward them as they are received, rather than being
+forced to hold the entire file.</p>
+<p>Partitioning also permits multiple streams to transfer portions of the file in parallel.
+Multiple streams can provide an effective optimization over long links.</p>
+</dd>
+</dl>
+</section>
+<section id="topic">
+<h3><a class="toc-backref" href="#id9">TOPIC</a><a class="headerlink" href="#topic" title="Permalink to this headline">¶</a></h3>
+<p>In topic based AMQP exchanges, every message has a topic header. AMQP defines the ‘.’ character
+as a hierarchical separator (like ‘' in a windows path name, or ‘/’ on linux) there is also a
+pair of wildcards defined by the standard:  ‘*’ matches a single topic, ‘#’ matches the rest of
+the topic string. To allow for changes in the message body in the future, topic trees begin with
+the version number of the protocol.</p>
+<p>AMQP allows server side topic filtering using wildcards. Subscribers specify topics of
+interest (which correspond to directories on the server), allowing them to pare down the
+number of notifications sent from server to client.</p>
+<p>The root of the topic tree is the version specifier: “v03”.  Next comes the message type specifier.
+These two fields define the protocol that is in use for the rest of the message.
+The message type for post messages is “post”.  After the fixed topic prefix,
+the remaining sub-topics are the path elements of the file on the web server.
+For example, if a file is placed on <a class="reference external" href="http://www.example.com/a/b/c/d/foo.txt">http://www.example.com/a/b/c/d/foo.txt</a>,
+then the complete topic of the message will be:  <em>v03.a.b.c.d</em>
+AMQP fields are limited to 255 characters, and the characters in the field are utf8
+encoded, so actual length limit may be less than that.</p>
+<p>note:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sarracenia</span> <span class="n">relies</span> <span class="n">on</span> <span class="n">brokers</span> <span class="n">to</span> <span class="n">interpret</span> <span class="n">the</span> <span class="n">topic</span> <span class="n">header</span><span class="o">.</span> <span class="n">Brokers</span> <span class="n">interpret</span> <span class="n">protocol</span>
+<span class="n">specific</span> <span class="n">headers</span> <span class="o">*</span><span class="n">AMQP</span><span class="p">),</span> <span class="ow">and</span> <span class="n">will</span> <span class="ow">not</span> <span class="n">efficiently</span> <span class="n">decode</span> <span class="n">the</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">extract</span> <span class="n">headers</span><span class="o">.</span>
+<span class="n">Therefore</span> <span class="n">the</span> <span class="n">topic</span> <span class="n">header</span> <span class="ow">is</span> <span class="n">stored</span> <span class="ow">in</span> <span class="n">an</span> <span class="n">AMQP</span> <span class="n">header</span><span class="p">,</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">the</span> <span class="n">payload</span> <span class="n">to</span> <span class="n">permit</span>
+<span class="n">server</span><span class="o">-</span><span class="n">side</span> <span class="n">filtering</span><span class="o">.</span> <span class="n">To</span> <span class="n">avoid</span> <span class="n">sending</span> <span class="n">the</span> <span class="n">same</span> <span class="n">information</span> <span class="n">twice</span><span class="p">,</span> <span class="n">this</span> <span class="n">header</span> <span class="ow">is</span>
+<span class="n">omitted</span> <span class="kn">from</span> <span class="nn">the</span> <span class="n">JSON</span> <span class="n">payload</span><span class="o">.</span>
+
+<span class="n">Many</span> <span class="n">client</span><span class="o">-</span><span class="n">side</span> <span class="n">implementation</span> <span class="n">will</span><span class="p">,</span> <span class="n">once</span> <span class="n">the</span> <span class="n">message</span> <span class="ow">is</span> <span class="n">loaded</span><span class="p">,</span> <span class="nb">set</span> <span class="n">the</span> <span class="o">*</span><span class="n">topic</span><span class="o">*</span> <span class="n">header</span>
+<span class="ow">in</span> <span class="n">the</span> <span class="ow">in</span><span class="o">-</span><span class="n">memory</span> <span class="n">structure</span><span class="p">,</span> <span class="n">so</span> <span class="n">it</span> <span class="n">would</span> <span class="n">be</span> <span class="n">very</span> <span class="n">unwise</span> <span class="n">to</span> <span class="n">to</span> <span class="nb">set</span> <span class="n">the</span> <span class="o">*</span><span class="n">topic</span><span class="o">*</span> <span class="n">header</span>
+<span class="ow">in</span> <span class="n">an</span> <span class="n">application</span> <span class="n">even</span> <span class="n">though</span> <span class="n">it</span> <span class="n">isn</span><span class="s1">&#39;t visible in the on-wire payload.</span>
+</pre></div>
+</div>
+<section id="mapping-to-mqtt">
+<h4><a class="toc-backref" href="#id10">Mapping to MQTT</a><a class="headerlink" href="#mapping-to-mqtt" title="Permalink to this headline">¶</a></h4>
+<p>One goal of v03 format is to have a payload format that works with more than just AMQP.
+Message Queing Telemetry Transport (MQTT v3.11) is an iso standard ( <a class="reference external" href="https://www.iso.org/standard/69466.html">https://www.iso.org/standard/69466.html</a>
+protocol that can easily support the same pub/sub messaging pattern, but a few details
+differ, so a mapping is needed.</p>
+<p>Firstly, the topic separate in MQTT is a forward slash (/), instead of the period (.) used in AMQP.</p>
+<p>Second, with AMQP, one can establish separate topic hierarchies using <em>topic-based exchanges</em>.
+MQTT has no similar concept, there is simply one hierarchy, so when mapping, place the exchange
+name at the root of the topic hierarchy to achieve the same effect:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AMQP</span><span class="p">:</span>   <span class="n">Exchange</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">exchange</span> <span class="n">name</span><span class="o">&gt;</span>
+           <span class="n">topic</span><span class="p">:</span> <span class="n">v03</span><span class="o">.&lt;</span><span class="n">directory</span><span class="o">&gt;...</span>
+
+<span class="n">MQTT</span><span class="p">:</span>   <span class="n">topic</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">exchange</span> <span class="n">name</span><span class="o">&gt;/</span><span class="n">v03</span><span class="o">/&lt;</span><span class="n">directory</span><span class="o">&gt;...</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-fixed-headers">
+<h3><a class="toc-backref" href="#id11">THE FIXED HEADERS</a><a class="headerlink" href="#the-fixed-headers" title="Permalink to this headline">¶</a></h3>
+<p>The message is a single JSON encoded array, with a mandatory set of fields, while allowing
+for use of arbitrary other fields.  Mandatory fields must be present in every message, and</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>“pubTime” : “<em>&lt;date stamp&gt;</em>” : the publication date the posting was emitted.  Format: YYYYMMDDTHHMMSS. <em>&lt;decimalseconds&gt;</em></p></li>
+</ul>
+<p>Note: The datestamp is always in the UTC timezone.</p>
+<ul class="simple">
+<li><p>“baseUrl” : “&lt;<em>base_url</em>&gt;” – the base URL used to retrieve the data.</p></li>
+<li><p>“relPath” : “&lt;<em>relativepath</em>&gt;” –  the variable part of the URL, usually appended to <em>baseUrl</em>.</p></li>
+</ul>
+</div></blockquote>
+<p>The URL consumers will use to download the data. Example of a complete URL:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sftp</span><span class="p">:</span><span class="o">//</span><span class="n">afsiext</span><span class="nd">@cmcdataserver</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">NRPDS</span><span class="o">/</span><span class="n">outputs</span><span class="o">/</span><span class="n">NRPDS_HiRes_000</span><span class="o">.</span><span class="n">gif</span>
+</pre></div>
+</div>
+<p>Additional fields:</p>
+<section id="from-cluster-cluster-name">
+<h4><a class="toc-backref" href="#id12"><strong>from_cluster=&lt;cluster_name&gt;</strong></a><a class="headerlink" href="#from-cluster-cluster-name" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>The from_cluster header defines the name of the source cluster where the
+data was introduced into the network. It is used to return the logs back
+to the cluster whenever its products are used.</p>
+</div></blockquote>
+</section>
+<section id="link-value-of-symbolic-link">
+<h4><a class="toc-backref" href="#id13"><strong>link=&lt;value of symbolic link&gt;</strong></a><a class="headerlink" href="#link-value-of-symbolic-link" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>When file to transfer is a symbolic link, the ‘link’ header is created to
+contain its value.</p>
+</div></blockquote>
+</section>
+<section id="parts">
+<h4><a class="toc-backref" href="#id14"><strong>Parts</strong></a><a class="headerlink" href="#parts" title="Permalink to this headline">¶</a></h4>
+<p id="id1">v02: <strong>parts=&lt;method&gt;,&lt;bsz&gt;,&lt;blktot&gt;,&lt;brem&gt;,&lt;bno&gt;</strong></p>
+<p>v03:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>    <span class="s2">&quot;size&quot;</span><span class="p">:</span><span class="o">&lt;</span><span class="n">sz</span><span class="o">&gt;</span> <span class="p">,</span>
+
+    <span class="s2">&quot;blocks&quot;</span> <span class="p">:</span>
+    <span class="p">{</span>
+           <span class="s2">&quot;method&quot;</span><span class="p">:</span> <span class="s2">&quot;inplace&quot;</span> <span class="ow">or</span> <span class="s2">&quot;partitioned&quot;</span><span class="p">,</span>
+           <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">bsz</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">blktot</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="s2">&quot;remainder&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">brem</span><span class="o">&gt;</span><span class="p">,</span>
+           <span class="s2">&quot;number&quot;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">bno</span><span class="o">&gt;</span>
+    <span class="p">}</span>
+
+<span class="n">A</span> <span class="n">header</span> <span class="n">indicating</span> <span class="n">the</span> <span class="n">method</span> <span class="ow">and</span> <span class="n">parameters</span> <span class="k">for</span> <span class="n">partitioning</span> <span class="n">applied</span> <span class="k">for</span> <span class="n">the</span> <span class="n">file</span><span class="o">.</span>
+<span class="n">Partitioning</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">send</span> <span class="n">a</span> <span class="n">single</span> <span class="n">file</span> <span class="k">as</span> <span class="n">a</span> <span class="n">collection</span> <span class="n">of</span> <span class="n">segments</span><span class="p">,</span> <span class="n">rather</span> <span class="n">than</span> <span class="k">as</span>
+<span class="n">a</span> <span class="n">single</span> <span class="n">entity</span><span class="o">.</span>  <span class="n">Partitioning</span> <span class="ow">is</span> <span class="n">used</span> <span class="n">to</span> <span class="n">accelerate</span> <span class="n">transfers</span> <span class="n">of</span> <span class="n">large</span> <span class="n">data</span> <span class="n">sets</span> <span class="n">by</span> <span class="n">using</span>
+<span class="n">multiple</span> <span class="n">streams</span><span class="p">,</span> <span class="ow">and</span><span class="o">/</span><span class="ow">or</span> <span class="n">to</span> <span class="n">reduce</span> <span class="n">storage</span> <span class="n">use</span> <span class="k">for</span> <span class="n">extremely</span> <span class="n">large</span> <span class="n">files</span><span class="o">.</span>
+
+<span class="n">When</span> <span class="n">transferring</span> <span class="n">partitioned</span> <span class="n">files</span><span class="p">,</span> <span class="n">each</span> <span class="n">partition</span> <span class="ow">is</span> <span class="n">advertised</span> <span class="ow">and</span> <span class="n">potentially</span> <span class="n">transported</span>
+<span class="n">independently</span> <span class="n">across</span> <span class="n">a</span> <span class="n">data</span> <span class="n">pumping</span> <span class="n">network</span><span class="o">.</span>
+
+<span class="o">*&lt;</span><span class="n">method</span><span class="o">&gt;*</span>
+
+<span class="n">Indicates</span> <span class="n">what</span> <span class="n">partitioning</span> <span class="n">method</span><span class="p">,</span> <span class="k">if</span> <span class="nb">any</span><span class="p">,</span> <span class="n">was</span> <span class="n">used</span> <span class="ow">in</span> <span class="n">transmission</span><span class="o">.</span>
+
+<span class="o">+-----------------+---------------------------------------------------------------------+</span>
+<span class="o">|</span>   <span class="n">Method</span>        <span class="o">|</span> <span class="n">Description</span>                                                         <span class="o">|</span>
+<span class="o">+-----------------+---------------------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">p</span> <span class="o">-</span> <span class="n">partitioned</span> <span class="o">|</span> <span class="n">File</span> <span class="ow">is</span> <span class="n">partitioned</span><span class="p">,</span> <span class="n">individual</span> <span class="n">part</span> <span class="n">files</span> <span class="n">are</span> <span class="n">created</span><span class="o">.</span>             <span class="o">|</span>
+<span class="o">+-----------------+---------------------------------------------------------------------+</span>
+<span class="o">|</span> <span class="n">i</span> <span class="o">-</span> <span class="n">inplace</span>     <span class="o">|</span> <span class="n">File</span> <span class="ow">is</span> <span class="n">partitioned</span><span class="p">,</span> <span class="n">but</span> <span class="n">blocks</span> <span class="n">are</span> <span class="n">read</span> <span class="kn">from</span> <span class="nn">a</span> <span class="n">single</span> <span class="n">file</span><span class="p">,</span>        <span class="o">|</span>
+<span class="o">|</span>                 <span class="o">|</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">parts</span><span class="o">.</span>                                                  <span class="o">|</span>
+<span class="o">+-----------------+---------------------------------------------------------------------+</span>
+<span class="o">|</span> <span class="mi">1</span> <span class="o">-</span> <span class="o">&lt;</span><span class="n">sizeonly</span><span class="o">&gt;</span>  <span class="o">|</span> <span class="n">File</span> <span class="ow">is</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">single</span> <span class="n">part</span> <span class="p">(</span><span class="n">no</span> <span class="n">partitioning</span><span class="p">)</span><span class="o">.</span>                         <span class="o">|</span>
+<span class="o">|</span>                 <span class="o">|</span> <span class="ow">in</span> <span class="n">v03</span><span class="p">,</span> <span class="n">only</span> <span class="o">*</span><span class="n">size</span><span class="o">*</span> <span class="n">header</span> <span class="n">will</span> <span class="n">be</span> <span class="n">present</span><span class="o">.</span> <span class="o">*</span><span class="n">blocks</span><span class="o">*</span> <span class="ow">is</span> <span class="n">omitted</span>     <span class="o">|</span>
+<span class="o">+-----------------+---------------------------------------------------------------------+</span>
+
+<span class="o">-</span> <span class="n">analogous</span> <span class="n">to</span> <span class="n">rsync</span> <span class="n">options</span><span class="p">:</span> <span class="o">--</span><span class="n">inplace</span><span class="p">,</span> <span class="o">--</span><span class="n">partial</span><span class="p">,</span>
+
+<span class="o">*&lt;</span><span class="n">blocksize</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">bsz</span><span class="o">*</span>
+
+<span class="n">The</span> <span class="n">number</span> <span class="n">of</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="n">a</span> <span class="n">block</span><span class="o">.</span>  <span class="n">When</span> <span class="n">using</span> <span class="n">method</span> <span class="mi">1</span><span class="p">,</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">block</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">size</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span><span class="o">.</span>
+<span class="n">Remaining</span> <span class="n">fields</span> <span class="n">only</span> <span class="n">useful</span> <span class="k">for</span> <span class="n">partitioned</span> <span class="n">files</span><span class="o">.</span>
+
+<span class="o">*&lt;</span><span class="n">blocks</span> <span class="ow">in</span> <span class="n">total</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">blktot</span><span class="o">*</span>
+<span class="n">the</span> <span class="n">integer</span> <span class="n">total</span> <span class="n">number</span> <span class="n">of</span> <span class="n">blocks</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">file</span> <span class="p">(</span><span class="n">last</span> <span class="n">block</span> <span class="n">may</span> <span class="n">be</span> <span class="n">partial</span><span class="p">)</span>
+
+<span class="o">*&lt;</span><span class="n">remainder</span><span class="o">&gt;</span><span class="p">:</span> <span class="n">brem</span><span class="o">*</span>
+<span class="n">normally</span> <span class="mi">0</span><span class="p">,</span> <span class="n">on</span> <span class="n">the</span> <span class="n">last</span> <span class="n">block</span><span class="p">,</span> <span class="n">remaining</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">file</span>
+<span class="n">to</span> <span class="n">transfer</span><span class="o">.</span>
+
+       <span class="o">--</span> <span class="k">if</span> <span class="p">(</span><span class="n">fzb</span><span class="o">=</span><span class="mi">1</span> <span class="ow">and</span> <span class="n">brem</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+              <span class="n">then</span> <span class="n">bsz</span><span class="o">=</span><span class="n">fsz</span> <span class="ow">in</span> <span class="nb">bytes</span> <span class="ow">in</span> <span class="nb">bytes</span><span class="o">.</span>
+              <span class="o">--</span> <span class="n">entire</span> <span class="n">files</span> <span class="n">replaced</span><span class="o">.</span>
+              <span class="o">--</span> <span class="n">this</span> <span class="ow">is</span> <span class="n">the</span> <span class="n">same</span> <span class="k">as</span> <span class="n">rsync</span><span class="s1">&#39;s --whole-file mode.</span>
+
+<span class="o">*&lt;</span><span class="n">block</span><span class="c1">#&gt;: bno*</span>
+<span class="mi">0</span> <span class="n">origin</span><span class="p">,</span> <span class="n">the</span> <span class="n">block</span> <span class="n">number</span> <span class="n">covered</span> <span class="n">by</span> <span class="n">this</span> <span class="n">posting</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="rename-relpath">
+<h4><a class="toc-backref" href="#id15"><strong>rename=&lt;relpath&gt;</strong></a><a class="headerlink" href="#rename-relpath" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>The relative path from the current directory in which to place the file.</p>
+</div></blockquote>
+</section>
+<section id="oldname-path-newname-path">
+<h4><a class="toc-backref" href="#id16"><strong>oldname=&lt;path&gt;</strong> / <strong>newname=&lt;path&gt;</strong></a><a class="headerlink" href="#oldname-path-newname-path" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>when a file is renamed at the source, to send it to subscribers, two posts
+result: one message is announced with the new name as the base_url,
+and the oldname header set to the previous file name.
+Another message is sent with the old name as the src path, and the <em>newname</em>
+as a header.  This ensures that <em>accept/reject</em> clauses are correctly
+interpreted, as a <em>rename</em> may result in a download if the former name
+matches a <em>reject</em>  clause, or a file removal if the new name
+matches a <em>reject</em> clause.</p>
+<p>Hard links are also handled as an ordinary post of the file with a <em>oldname</em>
+header set.</p>
+</div></blockquote>
+</section>
+<section id="source-sourceid">
+<h4><a class="toc-backref" href="#id17"><strong>source=&lt;sourceid&gt;</strong></a><a class="headerlink" href="#source-sourceid" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>a character field indicating the source of the data injected into the network.
+should be unique within a data pumping network.  It’s usually the same as the
+account used to authenticate to the broker.</p>
+</div></blockquote>
+</section>
+<section id="sum-method-value">
+<span id="sum"></span><h4><a class="toc-backref" href="#id18"><strong>sum=&lt;method&gt;,&lt;value&gt;</strong></a><a class="headerlink" href="#sum-method-value" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>The sum is a v02 signature computed to allow receivers to determine
+if they have already downloaded the partition from elsewhere.</p>
+<blockquote>
+<div><p><em>&lt;method&gt;</em> - character field indicating the checksum algorithm used.</p>
+</div></blockquote>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 81%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Method
+v02 - v03</p></td>
+<td><p>Description</p></td>
+</tr>
+<tr class="row-even"><td><p>0 - random</p></td>
+<td><p>No checksums (unconditional copy.) Skips reading file (faster)</p></td>
+</tr>
+<tr class="row-odd"><td><p>a - arbitrary</p></td>
+<td><p>arbitrary, application defined value which cannot be calculated</p></td>
+</tr>
+<tr class="row-even"><td><p>d - md5</p></td>
+<td><p>Checksum the entire data (MD-5 as per IETF RFC 1321)</p></td>
+</tr>
+<tr class="row-odd"><td><p>L - link</p></td>
+<td><p>Linked: SHA512 sum of link value</p></td>
+</tr>
+<tr class="row-even"><td><p>n - md5name</p></td>
+<td><p>Checksum the file name (MD-5 as per IETF RFC 1321)</p></td>
+</tr>
+<tr class="row-odd"><td><p>R - remove</p></td>
+<td><p>Removed: SHA512 of file name.</p></td>
+</tr>
+<tr class="row-even"><td><p>s - sha512</p></td>
+<td><p>Checksum the entire data (SHA512 as per IETF RFC 6234)</p></td>
+</tr>
+<tr class="row-odd"><td><p>z - cod</p></td>
+<td><p>Checksum on download, with algorithm as argument
+Example:  z,d means download, applying d checksum, and advertise
+with that calculated checksum when propagating further.</p></td>
+</tr>
+<tr class="row-even"><td><p><em>&lt;name&gt;</em></p></td>
+<td><p>Checksum with some other algorithm, named <em>&lt;name&gt;</em>
+<em>&lt;name&gt;</em> should be <em>registered</em> in the data pumping network.
+Registered means that all downstream subscribers can obtain the
+algorithm to validate the checksum.</p></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<dl class="simple">
+<dt><em>&lt;value&gt;</em> The value is computed by applying the given method to the partition being transferred.</dt><dd><p>for algorithms for which no value makes sense, a random integer is generated to support
+checksum based load balancing.</p>
+</dd>
+</dl>
+</section>
+<section id="integrity">
+<h4><a class="toc-backref" href="#id19"><strong>integrity</strong></a><a class="headerlink" href="#integrity" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>Is a v03 version of the sum field made more explicit. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;sum&quot;</span> <span class="p">:</span> <span class="s2">&quot;d,hexsumvalue&quot;</span>    <span class="o">---&gt;</span> <span class="s2">&quot;integrity&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span><span class="s2">&quot;md5&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;base64sumvalue&quot;</span>  <span class="p">}</span>
+</pre></div>
+</div>
+<p>This is partially supported for now (produce but do not consume.) The change in name
+is also motivated by the intent to use add digital signatures to list of known algorithms.
+there is a change in encoding from hex to base64 for compactness’ sake.
+As the values for cod and zero sums are not encoded, they are the same in both v02 and v03.</p>
+</div></blockquote>
+</section>
+<section id="to-clusters-cluster-name1-cluster-name2">
+<h4><a class="toc-backref" href="#id20"><strong>to_clusters=&lt;cluster_name1,cluster_name2,…&gt;</strong></a><a class="headerlink" href="#to-clusters-cluster-name1-cluster-name2" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>The to_clusters defines a list of destination clusters where the data should go into the network.
+Each name should be unique within all exchanging rabbitmq clusters. It is used to do the transit
+of the products and their notices through the exchanging clusters.</p>
+</div></blockquote>
+<dl class="simple">
+<dt><strong>“topic”: v03.&lt;relpath without filename&gt;</strong> ( RESERVED )</dt><dd><p>The topic header is not present in the JSON payload of the message. It is instead stored
+in a protocol specific header (AMQP HEADER.) when an application reads the AMQP header
+into memory, it will typically add this to the in-memory structure.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="report-messages">
+<h3><a class="toc-backref" href="#id21">Report Messages</a><a class="headerlink" href="#report-messages" title="Permalink to this headline">¶</a></h3>
+<p>Some clients may return telemetry to the origin of downloaded data for troubleshooting
+and statistical purposes. Such messages, have the <em>v03.report</em> topic, and have a <em>report</em>
+header which is a JSON <em>object</em> with four fields:</p>
+<blockquote>
+<div><p>{ “elapsedTime”: &lt;report_time&gt;, “resultCode”: &lt;report_code&gt;, “host”: &lt;report_host&gt;, “user”: &lt;report_user&gt;* }</p>
+<ul class="simple">
+<li><p><em>&lt;report_code&gt;</em>  result codes describe in the next session</p></li>
+<li><p><em>&lt;report_time&gt;</em>  time the report was generated.</p></li>
+<li><p><em>&lt;report_host&gt;</em>  hostname from which the retrieval was initiated.</p></li>
+<li><p><em>&lt;report_user&gt;</em>  broker username from which the retrieval was initiated.</p></li>
+</ul>
+</div></blockquote>
+<p>Report messages should never include the <em>content</em> header (no file embedding in reports.)</p>
+<section id="report-code">
+<h4><a class="toc-backref" href="#id22">Report_Code</a><a class="headerlink" href="#report-code" title="Permalink to this headline">¶</a></h4>
+<p>The report code is a three digit status code, adopted from the HTTP protocol (w3.org/IETF RFC 2616)
+encoded as text.  As per the RFC, any code returned should be interpreted as follows:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>2xx indicates successful completion,</p></li>
+<li><p>3xx indicates further action is required to complete the operation.</p></li>
+<li><p>4xx indicates a permanent error on the client prevented a successful operation.</p></li>
+<li><p>5xx indicates a problem on the server prevented successful operation.</p></li>
+</ul>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>FIXME: need to validate whether our use of error codes co-incides with the general intent
+expressed above… does a 3xx mean we expect the client to do something? does 5xx mean
+that the failure was on the broker/server side?</p>
+</div>
+<p>The specific error codes returned, and their meanings are implementation-dependent.
+For the sarracenia implementation, the following codes are defined:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Code</p></th>
+<th class="head"><p>Corresponding text and meaning for sarracenia implementation</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>201</p></td>
+<td><p>Download successful. (variations: Downloaded, Inserted, Published, Copied, or Linked)</p></td>
+</tr>
+<tr class="row-odd"><td><p>203</p></td>
+<td><p>Non-Authoritative Information: transformed during download.</p></td>
+</tr>
+<tr class="row-even"><td><p>205</p></td>
+<td><p>Reset Content: truncated. File is shorter than originally expected (changed length
+during transfer) This only arises during multi-part transfers.</p></td>
+</tr>
+<tr class="row-odd"><td><p>205</p></td>
+<td><p>Reset Content: checksum recalculated on receipt.</p></td>
+</tr>
+<tr class="row-even"><td><p>304</p></td>
+<td><p>Not modified (Checksum validated, unchanged, so no download resulted.)</p></td>
+</tr>
+<tr class="row-odd"><td><p>307</p></td>
+<td><p>Insertion deferred (writing to temporary part file for the moment.)</p></td>
+</tr>
+<tr class="row-even"><td><p>417</p></td>
+<td><p>Expectation Failed: invalid message (corrupt headers)</p></td>
+</tr>
+<tr class="row-odd"><td><p>496</p></td>
+<td><p>failure: During send, other protocol failure.</p></td>
+</tr>
+<tr class="row-even"><td><p>497</p></td>
+<td><p>failure: During send, other protocol failure.</p></td>
+</tr>
+<tr class="row-odd"><td><p>499</p></td>
+<td><p>Failure: Not Copied. SFTP/FTP/HTTP download problem</p></td>
+</tr>
+<tr class="row-even"><td><p>499</p></td>
+<td><p>Failure: Not Copied. SFTP/FTP/HTTP download problem</p></td>
+</tr>
+<tr class="row-odd"><td><p>503</p></td>
+<td><p>Service unavailable. delete (File removal not currently supported.)</p></td>
+</tr>
+<tr class="row-even"><td><p>503</p></td>
+<td><p>Unable to process: Service unavailable</p></td>
+</tr>
+<tr class="row-odd"><td><p>503</p></td>
+<td><p>Unsupported transport protocol specified in posting.</p></td>
+</tr>
+<tr class="row-even"><td><p>xxx</p></td>
+<td><p>Message and file validation status codes are script dependent</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="other-report-fields">
+<h4><a class="toc-backref" href="#id23">Other Report Fields</a><a class="headerlink" href="#other-report-fields" title="Permalink to this headline">¶</a></h4>
+<p><em>&lt;report_message&gt;</em> a string.</p>
+</section>
+</section>
+<section id="optional-headers">
+<h3><a class="toc-backref" href="#id24">Optional Headers</a><a class="headerlink" href="#optional-headers" title="Permalink to this headline">¶</a></h3>
+<p>for the file mirroring use case, additional headers will be present:</p>
+<section id="atime-mtime-mode">
+<h4><a class="toc-backref" href="#id25"><strong>atime,mtime,mode</strong></a><a class="headerlink" href="#atime-mtime-mode" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div><p>man 2 stat - the linux/unix standard file metadata:
+access time, modification time, and permission (mode bits)
+the times are in the same date format as the pubTime field.
+the permission string is four characters intended to be interpreted as
+traditional octal linux/unix permissions.</p>
+</div></blockquote>
+<p><strong>Headers which are unknown to a given broker MUST be forwarded without modification.</strong></p>
+<p>Sarracenia provides a mechanism for users to include arbitrary other headers in
+messages, to amplify metadata for more detailed decision making about downloading data.
+For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;PRINTER&quot;</span> <span class="p">:</span> <span class="s2">&quot;name_of_corporate_printer&quot;</span><span class="p">,</span>
+
+<span class="s2">&quot;GeograpicBoundingBox&quot;</span> <span class="p">:</span>
+ <span class="p">{</span>
+         <span class="s2">&quot;top_left&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="mf">40.73</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">74.1</span> <span class="p">}</span> <span class="p">,</span>
+         <span class="s2">&quot;bottom_right&quot;</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;lat&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">40.01</span><span class="p">,</span> <span class="s2">&quot;lon&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">71.12</span> <span class="p">}</span>
+ <span class="p">}</span>
+</pre></div>
+</div>
+<p>would permit the client to apply more elaborate and precise client side filtering,
+and/or processing. Intervening implementation may know nothing about the header,
+but they should not be stripped, as some consumers may understand and process them.</p>
+</section>
+</section>
+<section id="example">
+<h3><a class="toc-backref" href="#id26">EXAMPLE</a><a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AMQP</span> <span class="n">TOPIC</span><span class="p">:</span> <span class="n">v03</span><span class="o">.</span><span class="n">NRDPS</span><span class="o">.</span><span class="n">GIF</span>
+<span class="n">MQTT</span> <span class="n">TOPIC</span><span class="p">:</span> <span class="n">exchange</span><span class="o">/</span><span class="n">v03</span><span class="o">/</span><span class="n">NRDPS</span><span class="o">/</span><span class="n">GIF</span><span class="o">/</span>
+<span class="n">Body</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;pubTime&quot;</span><span class="p">:</span> <span class="s2">&quot;201506011357.345&quot;</span><span class="p">,</span> <span class="s2">&quot;baseUrl&quot;</span><span class="p">:</span> <span class="s2">&quot;sftp://afsiext@cmcdataserver&quot;</span><span class="p">,</span> <span class="s2">&quot;relPath&quot;</span><span class="p">:</span> <span class="s2">&quot;/data/NRPDS/outputs/NRDPS_HiRes_000.gif&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;rename&quot;</span><span class="p">:</span> <span class="s2">&quot;NRDPS/GIF/&quot;</span><span class="p">,</span> <span class="s2">&quot;parts&quot;</span><span class="p">:</span><span class="s2">&quot;p,457,1,0,0&quot;</span><span class="p">,</span> <span class="s2">&quot;integrity&quot;</span> <span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;method&quot;</span><span class="p">:</span><span class="s2">&quot;md5&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span><span class="s2">&quot;&lt;md5sum-base64&gt;&quot;</span> <span class="p">},</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;ec_cmc&quot;</span> <span class="p">}</span>
+
+       <span class="o">-</span> <span class="n">v03</span> <span class="o">-</span> <span class="n">version</span> <span class="n">of</span> <span class="n">protocol</span>
+       <span class="o">-</span> <span class="n">post</span> <span class="o">-</span> <span class="n">indicates</span> <span class="n">the</span> <span class="nb">type</span> <span class="n">of</span> <span class="n">message</span>
+       <span class="o">-</span> <span class="n">version</span> <span class="ow">and</span> <span class="nb">type</span> <span class="n">together</span> <span class="n">determine</span> <span class="nb">format</span> <span class="n">of</span> <span class="n">following</span> <span class="n">topics</span> <span class="ow">and</span> <span class="n">the</span> <span class="n">message</span> <span class="n">body</span><span class="o">.</span>
+
+       <span class="o">-</span> <span class="n">blocksize</span> <span class="ow">is</span> <span class="mi">457</span>  <span class="p">(</span><span class="o">==</span> <span class="n">file</span> <span class="n">size</span><span class="p">)</span>
+       <span class="o">-</span> <span class="n">block</span> <span class="n">count</span> <span class="ow">is</span> <span class="mi">1</span>
+       <span class="o">-</span> <span class="n">remainder</span> <span class="ow">is</span> <span class="mf">0.</span>
+       <span class="o">-</span> <span class="n">block</span> <span class="n">number</span> <span class="ow">is</span> <span class="mf">0.</span>
+       <span class="o">-</span> <span class="n">d</span> <span class="o">-</span> <span class="n">checksum</span> <span class="n">was</span> <span class="n">calculated</span> <span class="n">on</span> <span class="n">the</span> <span class="n">body</span> <span class="n">of</span> <span class="n">the</span> <span class="n">file</span><span class="o">.</span>
+       <span class="o">-</span> <span class="n">complete</span> <span class="n">source</span> <span class="n">URL</span> <span class="n">specified</span> <span class="p">(</span><span class="n">does</span> <span class="ow">not</span> <span class="n">end</span> <span class="ow">in</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+       <span class="o">-</span> <span class="n">relative</span> <span class="n">path</span> <span class="n">specified</span> <span class="k">for</span>
+
+       <span class="n">pull</span> <span class="n">from</span><span class="p">:</span>
+               <span class="n">sftp</span><span class="p">:</span><span class="o">//</span><span class="n">afsiext</span><span class="nd">@cmcdataserver</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">NRPDS</span><span class="o">/</span><span class="n">outputs</span><span class="o">/</span><span class="n">NRDPS_HiRes_000</span><span class="o">.</span><span class="n">gif</span>
+
+       <span class="n">complete</span> <span class="n">relative</span> <span class="n">download</span> <span class="n">path</span><span class="p">:</span>
+               <span class="n">NRDPS</span><span class="o">/</span><span class="n">GIF</span><span class="o">/</span><span class="n">NRDPS_HiRes_000</span><span class="o">.</span><span class="n">gif</span>
+
+               <span class="o">--</span> <span class="n">takes</span> <span class="n">file</span> <span class="n">name</span> <span class="kn">from</span> <span class="nn">base_url.</span>
+               <span class="o">--</span> <span class="n">may</span> <span class="n">be</span> <span class="n">modified</span> <span class="n">by</span> <span class="n">validation</span> <span class="n">process</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="another-example">
+<h3><a class="toc-backref" href="#id27">Another example</a><a class="headerlink" href="#another-example" title="Permalink to this headline">¶</a></h3>
+<p>The post resulting from the following sr_watch command, noticing creation of the file ‘foo’:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sr_watch</span> <span class="o">-</span><span class="n">pbu</span> <span class="n">sftp</span><span class="p">:</span><span class="o">//</span><span class="n">stanley</span><span class="nd">@mysftpserver</span><span class="o">.</span><span class="n">com</span><span class="o">/</span> <span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">shared</span><span class="o">/</span><span class="n">products</span><span class="o">/</span><span class="n">foo</span> <span class="o">-</span><span class="n">pb</span> <span class="n">amqp</span><span class="p">:</span><span class="o">//</span><span class="n">broker</span><span class="o">.</span><span class="n">com</span>
+</pre></div>
+</div>
+<p>Here, <em>sr_watch</em> checks if the file /data/shared/products/foo is modified.
+When it happens, <em>sr_watch</em>  reads the file /data/shared/products/foo and calculates its checksum.
+It then builds a post message, logs into broker.com as user ‘guest’ (default credentials)
+and sends the post to defaults vhost ‘/’ and exchange ‘sx_guest’ (default exchange).</p>
+<p>A subscriber can download the file /data/shared/products/foo  by logging in as user stanley
+on mysftpserver.com using the sftp protocol to  broker.com assuming he has proper credentials.</p>
+<p>The output of the command is as follows</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AMQP</span> <span class="n">Topic</span><span class="p">:</span> <span class="n">v03</span><span class="mf">.20150813</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">shared</span><span class="o">.</span><span class="n">products</span>
+<span class="n">MQTT</span> <span class="n">Topic</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">exchange</span><span class="o">&gt;/</span><span class="n">v03</span><span class="o">/</span><span class="mi">20150813</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">shared</span><span class="o">/</span><span class="n">products</span>
+<span class="n">Body</span><span class="p">:</span> <span class="p">{</span> <span class="s2">&quot;pubTime&quot;</span><span class="p">:</span><span class="s2">&quot;20150813T161959.854&quot;</span><span class="p">,</span> <span class="s2">&quot;baseUrl&quot;</span><span class="p">:</span><span class="s2">&quot;sftp://stanley@mysftpserver.com/&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;relPath&quot;</span><span class="p">:</span> <span class="s2">&quot;/data/shared/products/foo&quot;</span><span class="p">,</span> <span class="s2">&quot;parts&quot;</span><span class="p">:</span><span class="s2">&quot;1,256,1,0,0&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sum&quot;</span><span class="p">:</span> <span class="s2">&quot;d,25d231ec0ae3c569ba27ab7a74dd72ce&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span><span class="s2">&quot;guest&quot;</span> <span class="p">}</span>
+</pre></div>
+</div>
+<p>Posts are published on AMQP topic exchanges, meaning every message has a topic header.
+The body consists of a time <em>20150813T161959.854</em>, followed by the two parts of the
+retrieval URL. The headers follow with first the <em>parts</em>, a size in bytes <em>256</em>,
+the number of block of that size <em>1</em>, the remaining bytes <em>0</em>, the
+current block <em>0</em>, a flag <em>d</em> meaning the md5 checksum is
+performed on the data, and the checksum <em>25d231ec0ae3c569ba27ab7a74dd72ce</em>.</p>
+</section>
+<section id="metpx-sarracenia">
+<h3><a class="toc-backref" href="#id28">MetPX-Sarracenia</a><a class="headerlink" href="#metpx-sarracenia" title="Permalink to this headline">¶</a></h3>
+<p>The MetPX project ( <a class="reference external" href="https://github.com/MetPX">https://github.com/MetPX</a> ) has a sub-project called Sarracenia which is intended
+as a testbed and reference implementation for this protocol using AMQP. This implementation is
+licensed using the General Public License (Gnu GPL v2), and is thus free to use, and can be used to
+confirm interoperability with any other implementations that may arise. While Sarracenia
+itself is expected to be very usable in a variety of contexts, there is no intent for it
+to implement any features not described by this documentation.</p>
+<p>The MetPX project also has the wmo_mesh sub-project, which implements a minimal subset of the
+same message format, but works with MQTT in place of AMQP.</p>
+<p>This Manual page is intended to completely specify the format of messages and their
+intended meaning so that other producers and consumers of messages can be implemented.</p>
+<section id="v02">
+<h4><a class="toc-backref" href="#id29">v02</a><a class="headerlink" href="#v02" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="sr3_post.7.rst">sr_post version 2 reference man page</a></p>
+</section>
+<section id="changes-from-v02">
+<h4><a class="toc-backref" href="#id30">Changes from v02</a><a class="headerlink" href="#changes-from-v02" title="Permalink to this headline">¶</a></h4>
+<p>Version 03 is a change in encoding, but the semantics of the fields
+are unchanged from version 02. Changes are limited to how the fields
+are placed in the messages. In v02, AMQP headers were used to store name-value
+pairs.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>v03 headers have practically unlimited length. In v02, individual
+name-value pairs are limited to 255 characters. This has proven
+limiting in practice. In v03, the limit is not defined by the JSON
+standard, but by specific parser implementations. The limits in common
+parsers are high enough not to cause practical concerns.</p></li>
+<li><p>use of message payload to store headers makes it possible to consider
+other messaging protocols, such as MQTT 3.1.1, in future.</p></li>
+<li><p>In v03, pure JSON payload simplifies implementations, reduces documentation
+required, and amount of parsing to implement. Using a commonly implemented
+format permits use of existing optimized parsers.</p></li>
+<li><p>In v03, JSON encoding of the entire payload reduces the features required for
+a protocol to forward Sarracenia posts. For example, one might
+consider using Sarracenia with MQTT v3.11 brokers which are more
+standardized and therefore more easily interoperable than AMQP.</p></li>
+<li><p>v02 fixed fields are now  “pubTime”, “baseURL”, and “relPath” keys
+in the JSON object that is the messge body.</p></li>
+<li><p>v02 <em>sum</em> header with hex encoded value, is replaced by v03 <em>integrity</em> header with base64 encoding.</p></li>
+<li><p>v03 <em>content</em> header allows file content embedding.</p></li>
+<li><p>Change in overhead… approximately +75 bytes per message (varies.)</p>
+<ul>
+<li><p>JSON object marking curly braces ‘{’ ‘}’, commas and quotes for
+three fixed fields. net: +10</p></li>
+<li><p>AMQP section <em>Application Properties</em> no longer included in payload, saving
+a 3 byte header (replaced by 2 bytes of open and close braces payload.)
+net: -1 byte</p></li>
+<li><p>each field has a one byte header to indicate the table entry in an AMQP
+packet, versus 4 quote characters, a colon, a space, and likely a comma: 7 total.
+so net change is +6 characters. per header. Most v02 messages have 6 headers,
+net: +36 bytes</p></li>
+<li><p>the fixed fields are now named: pubTime, baseUrl, relPath, adding 10 characters
+each. +30 bytes.</p></li>
+</ul>
+</li>
+<li><p>In v03, the format of save files is the same as message payload.
+In v02 it was a json tuple that included a topic field, the body, and the headers.</p></li>
+<li><p>In v03, the report format is a post message with a header, rather than
+being parsed differently. So this single spec applies to both.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="optimization-possibilities">
+<h4><a class="toc-backref" href="#id31">Optimization Possibilities</a><a class="headerlink" href="#optimization-possibilities" title="Permalink to this headline">¶</a></h4>
+<p>optimization goal is for readabilty and ease of implementation, much more
+than efficiency or performance. There are many optimizations to reduce
+overheads of various sorts, all of which will increase implementation
+complexity. examples: gzip the payload would save perhaps 50% size,
+also grouping fixed headers together, (‘body’ header could contain
+all fixed fields: “pubtime, baseurl, relpath, sum, parts”, and another
+field ‘meta’ could contain: atime, mtime, mode so there would be fewer
+named fields and save perhaps 40 bytes of overhead per notice. But
+all the changes increase complexity, make messages more involved to parse.</p>
+</section>
+</section>
+<section id="amqp-feature-selection">
+<h3><a class="toc-backref" href="#id32">AMQP Feature Selection</a><a class="headerlink" href="#amqp-feature-selection" title="Permalink to this headline">¶</a></h3>
+<p>AMQP is a universal message passing protocol with many different
+options to support many different messaging patterns.  MetPX-sarracenia specifies and uses a
+small subset of AMQP patterns. An important element of Sarracenia development was to
+select from the many possibilities a small subset of methods are general and
+easily understood, in order to maximize potential for interoperability.</p>
+<section id="analogy-ftp">
+<h4><a class="toc-backref" href="#id33">Analogy FTP</a><a class="headerlink" href="#analogy-ftp" title="Permalink to this headline">¶</a></h4>
+<p>Specifying the use of a protocol alone may be insufficient to provide enough information for
+data exchange and interoperability.  For example when exchanging data via FTP, a number of choices
+need to be made above and beyond the protocol.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>authenticated or anonymous use?</p></li>
+<li><p>how to signal that a file transfer has completed (permission bits? suffix? prefix?)</p></li>
+<li><p>naming convention</p></li>
+<li><p>text or binary transfer</p></li>
+</ul>
+</div></blockquote>
+<p>Agreed conventions above and beyond simply FTP (IETF RFC 959) are needed.  Similar to the use
+of FTP alone as a transfer protocol is insufficient to specify a complete data transfer
+procedure, use of AMQP, without more information, is incomplete. The intent of the conventions
+layered on top of AMQP is to be a minimum amount to achieve meaningful data exchange.</p>
+</section>
+<section id="amqp-not-1-0-but-0-8-or-0-9">
+<h4><a class="toc-backref" href="#id34">AMQP: not 1.0, but 0.8 or 0.9</a><a class="headerlink" href="#amqp-not-1-0-but-0-8-or-0-9" title="Permalink to this headline">¶</a></h4>
+<p>AMQP 1.0 standardizes the on-the-wire protocol, but removed all broker standardization.
+As the use of brokers is key to Sarracenia´s use of, was a fundamental element of earlier standards,
+and as the 1.0 standard is relatively controversial, this protocol assumes a pre 1.0 standard broker,
+as is provided by many free brokers, such as rabbitmq and Apache QPid, often referred to as 0.8,
+but 0.9 and post 0.9 brokers could inter-operate well.</p>
+</section>
+<section id="named-exchanges-and-queues">
+<h4><a class="toc-backref" href="#id35">Named Exchanges and Queues</a><a class="headerlink" href="#named-exchanges-and-queues" title="Permalink to this headline">¶</a></h4>
+<p>In AMQP prior to 1.0, many different actors can define communication parameters, such as exchanges
+to publish to, queues where messages accumulate, and bindings between the two. Applications
+and users declare and user their exchanges, queues, and bindings. All of this was dropped
+in the move to 1.0 making topic based exchanges, an important underpinning of pub/sub patterns
+much more difficult.</p>
+<p>in AMQP 0.9, one subscriber can declare a queue, and then multiple processes (given the right
+permissions and the queue name) can consume from the same queue. That requires being able
+to name the queue. In another protocol, such as MQTT, one cannot name the queue, and so
+this processing pattern is not supported.</p>
+<p>The mapping convention describte in a <a class="reference internal" href="#topic">Topic</a> section, allows MQTT to establish separate
+hierarchies which provides a fixed distribution among the workers, but not exactly the
+self-balancing shared queue that AMQP provides.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In RabbitMQ (the initial broker used), permissions are assigned using regular expressions. So
+a permission model where AMQP users can define and use <em>their</em> exchanges and queues
+is enforced by a naming convention easily mapped to regular expressions (all such
+resources include the username near the beginning). Exchanges begin with: xs_&lt;user&gt;_.
+Queue names begin with: q_&lt;user&gt;_.</p>
+</div>
+</section>
+<section id="topic-based-exchanges">
+<h4><a class="toc-backref" href="#id36">Topic-based Exchanges</a><a class="headerlink" href="#topic-based-exchanges" title="Permalink to this headline">¶</a></h4>
+<p>Topic-based exchanges are used exclusively. AMQP supports many other types of exchanges,
+but sr_post have the topic sent in order to support server side filtering by using topic
+based filtering. At AMQP 1.0, topic-based exchanges (indeed all exchanges, are no
+longer defined.) Server-side filtering allows for much fewer topic hierarchies to be used,
+and for much more efficient subsciptions.</p>
+<p>In Sarracenia, topics are chosen to mirror the path of the files being announced, allowing
+straight-forward server-side filtering, to be augmented by client-side filtering on
+message reception.</p>
+<p>The root of the topic tree is the version of the message payload.  This allows single brokers
+to easily support multiple versions of the protocol at the same time during transitions.  <em>v02</em>,
+created in 2015, is the third iteration of the protocol and existing servers routinely support previous
+versions simultaneously in this way.  The second sub-topic defines the type of message.
+At the time of writing:  v02.post is the topic prefix for current post messages.</p>
+</section>
+<section id="little-data">
+<h4><a class="toc-backref" href="#id37">Little Data</a><a class="headerlink" href="#little-data" title="Permalink to this headline">¶</a></h4>
+<p>The AMQP messages contain announcements, no actual file data. AMQP is optimized for and assumes
+small messages. Keeping the messages small allows for maximum message throughtput and permits
+clients to use priority mechanisms based on transfer of data, rather than the announcements.
+Accomodating large messages would create many practical complications, and inevitably require
+the definition of a maximum file size to be included in the message itself, resulting in
+complexity to cover multiple cases.</p>
+<p>Sr_post is intended for use with arbitrarily large files, via segmentation and multi-streaming.
+Blocks of large files are announced independently and blocks can follow different paths
+between initial pump and final delivery. The protocol is unidirectional, in that there
+is no dialogue between publisher and subscriber. Each post is a stand-alone item that
+is one message in a stream, which on receipt may be spread over a number of nodes.</p>
+<p>However, it is likely that, for small files over high latency links, it is
+more efficient to include the body of the files in the messages themselve,
+rather than forcing a separate retrieval phase.  The relative advantage depends on:</p>
+<ul class="simple">
+<li><p>relative coarseness of server side filtering means some filtering is done on
+the client side.  Any data embedded for messages discarded on the client-side
+are waste.</p></li>
+<li><p>Sarracenia establishes long-lived connections for some protocols, such as SFTP,
+so the relative overhead for a retrieval may not be long.</p></li>
+<li><p>One will achieve a higher messaging rate without data being embedded, and if the
+messages are distributed to a number of workers, it is possible that the resulting
+message rate is higher without embedded data (because of faster distribution for
+parallel download) than the savings from embedding.</p></li>
+<li><p>the lower the latency of the connection, the lesser the performance advantage
+of embedding, and the more it becomes a limiting factor on high performance
+transfers.</p></li>
+</ul>
+<p>Further work is needed to better clarify when it makes sense to embed content
+in messages. For now, the <em>content</em> header is included to allow such experiments
+to occur.</p>
+</section>
+<section id="other-parameters">
+<h4><a class="toc-backref" href="#id38">Other Parameters</a><a class="headerlink" href="#other-parameters" title="Permalink to this headline">¶</a></h4>
+<p>AMQP has many other settings, and reliability for a particular use case
+is assured by making the right choices.</p>
+<ul class="simple">
+<li><p>persistence (have queues survive broker restarts, default to true),</p></li>
+<li><p>expiry (how long a queue should exist when no-one is consuming from it.  Default: a few
+minutes for development, but can set much longer for production)</p></li>
+<li><p>message_ttl (the life-span of queued messages. Messages that are too old will not
+be delivered: default is forever.)</p></li>
+<li><p>Pre-fetch is an AMQP tunable to determine how many messages a client will
+retrieve from a broker at once, optimizing streaming. (default: 25)</p></li>
+</ul>
+<p>These are used in declarations of queues and exchanges to provide appropriate
+message processing.  This is not an exhaustive list.</p>
+</section>
+</section>
+<section id="standards">
+<h3><a class="toc-backref" href="#id39">Standards</a><a class="headerlink" href="#standards" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>Sarracenia relies on <a class="reference external" href="https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf">AMQP pre 1.0</a>
+as the 1.0 standard eliminated concepts: broker, exchange, queue, and
+binding.  The 1.0 feature set is below the minimum needed to support
+Sarracenia’s pub-sub architecture.</p></li>
+<li><p>MQTT refers to <a class="reference external" href="https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.pdf">MQTT v5.0</a>
+and <a class="reference external" href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html">MQTT v3.1.1</a>,
+MQTT v5 has important extension: shared subscriptions (heavily used in Sarracenia.)
+so v5 is highly recommended. v3.1 support is only for legacy support reasons.</p></li>
+<li><p>JSON is defined by <a class="reference external" href="https://www.rfc-editor.org/info/rfc7159">IETF RFC 7159</a>.
+JSON standard includes mandatory use of UNICODE character set (ISO 10646)
+JSON default character set is UTF-8, but allows multiple character
+encodings (UTF-8, UTF-16, UTF-32), but also prohibits presence of
+byte order markings (BOM.)</p></li>
+<li><p>the same as Sarracenia v02, UTF-8 is mandatory. Sarracenia restricts JSON format
+by requiring of UTF-8 encoding, (IETF RFC 3629) which does not need/use BOM.
+No other encoding is permitted.</p></li>
+<li><p>URL encoding, as per IETF RFC 1738, is used to escape unsafe characters
+where appropriate.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="further-reading">
+<h3><a class="toc-backref" href="#id40">FURTHER READING</a><a class="headerlink" href="#further-reading" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://github.com/MetPX">https://github.com/MetPX</a> - home page of metpx-sarracenia</p>
+<p><a class="reference external" href="http://rabbitmq.net">http://rabbitmq.net</a> - home page of the AMQP broker used to develop Sarracenia.</p>
+</section>
+<section id="see-also">
+<h3><a class="toc-backref" href="#id41">SEE ALSO</a><a class="headerlink" href="#see-also" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="sr3.1.rst#report.7.rst">sr_report(7)</a> - the format of report messages.</p>
+<p><a class="reference external" href="sr3.1.rst#pulse">sr_pulse(7)</a> - the format of pulse messages.</p>
+<p><a class="reference external" href="sr3.1.rst#report">sr_report(1)</a> - process report messages.</p>
+<p><a class="reference external" href="sr3_post.1.rst">sr_post(1)</a> - post announcemensts of specific files.</p>
+<p><a class="reference external" href="sr3.1.rst#sarra">sr_sarra(8)</a> - Subscribe, Acquire, and ReAdvertise tool.</p>
+<p><a class="reference external" href="sr3.1.rst#subscribe">sr_subscribe(1)</a> - the download client.</p>
+<p><a class="reference external" href="sr3.1.rst#watch">sr_watch(1)</a> - the directory watching daemon.</p>
+<p>tree <a class="reference external" href="sr3.1.rst#dd_subscribe">dd_subscribe(1)</a> - the http-only download client.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">SR_post</a><ul>
+<li><a class="reference internal" href="#sarracenia-v03-post-message-format-protocol">Sarracenia v03 Post Message Format/Protocol</a><ul>
+<li><a class="reference internal" href="#status-experimental">STATUS: EXPERIMENTAL</a></li>
+<li><a class="reference internal" href="#synopsis">SYNOPSIS</a><ul>
+<li><a class="reference internal" href="#amqp-topic-version-post-report-dir"><strong>AMQP Topic:</strong> <em>&lt;version&gt;.[post|report].{&lt;dir&gt;.}</em></a></li>
+<li><a class="reference internal" href="#body-headers-json-encoding"><strong>BODY:</strong> <em>{ &lt;headers&gt; }</em> (JSON encoding.)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#description">DESCRIPTION</a></li>
+<li><a class="reference internal" href="#topic">TOPIC</a><ul>
+<li><a class="reference internal" href="#mapping-to-mqtt">Mapping to MQTT</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-fixed-headers">THE FIXED HEADERS</a><ul>
+<li><a class="reference internal" href="#from-cluster-cluster-name"><strong>from_cluster=&lt;cluster_name&gt;</strong></a></li>
+<li><a class="reference internal" href="#link-value-of-symbolic-link"><strong>link=&lt;value of symbolic link&gt;</strong></a></li>
+<li><a class="reference internal" href="#parts"><strong>Parts</strong></a></li>
+<li><a class="reference internal" href="#rename-relpath"><strong>rename=&lt;relpath&gt;</strong></a></li>
+<li><a class="reference internal" href="#oldname-path-newname-path"><strong>oldname=&lt;path&gt;</strong> / <strong>newname=&lt;path&gt;</strong></a></li>
+<li><a class="reference internal" href="#source-sourceid"><strong>source=&lt;sourceid&gt;</strong></a></li>
+<li><a class="reference internal" href="#sum-method-value"><strong>sum=&lt;method&gt;,&lt;value&gt;</strong></a></li>
+<li><a class="reference internal" href="#integrity"><strong>integrity</strong></a></li>
+<li><a class="reference internal" href="#to-clusters-cluster-name1-cluster-name2"><strong>to_clusters=&lt;cluster_name1,cluster_name2,…&gt;</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#report-messages">Report Messages</a><ul>
+<li><a class="reference internal" href="#report-code">Report_Code</a></li>
+<li><a class="reference internal" href="#other-report-fields">Other Report Fields</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#optional-headers">Optional Headers</a><ul>
+<li><a class="reference internal" href="#atime-mtime-mode"><strong>atime,mtime,mode</strong></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#example">EXAMPLE</a></li>
+<li><a class="reference internal" href="#another-example">Another example</a></li>
+<li><a class="reference internal" href="#metpx-sarracenia">MetPX-Sarracenia</a><ul>
+<li><a class="reference internal" href="#v02">v02</a></li>
+<li><a class="reference internal" href="#changes-from-v02">Changes from v02</a></li>
+<li><a class="reference internal" href="#optimization-possibilities">Optimization Possibilities</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#amqp-feature-selection">AMQP Feature Selection</a><ul>
+<li><a class="reference internal" href="#analogy-ftp">Analogy FTP</a></li>
+<li><a class="reference internal" href="#amqp-not-1-0-but-0-8-or-0-9">AMQP: not 1.0, but 0.8 or 0.9</a></li>
+<li><a class="reference internal" href="#named-exchanges-and-queues">Named Exchanges and Queues</a></li>
+<li><a class="reference internal" href="#topic-based-exchanges">Topic-based Exchanges</a></li>
+<li><a class="reference internal" href="#little-data">Little Data</a></li>
+<li><a class="reference internal" href="#other-parameters">Other Parameters</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#standards">Standards</a></li>
+<li><a class="reference internal" href="#further-reading">FURTHER READING</a></li>
+<li><a class="reference internal" href="#see-also">SEE ALSO</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Reference/sr_post.7.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">SR_post</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

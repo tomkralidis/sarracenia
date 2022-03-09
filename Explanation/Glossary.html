@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Glossary &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Glossary</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="glossary">
+<h1>Glossary<a class="headerlink" href="#glossary" title="Permalink to this headline">¶</a></h1>
+<p>Sarracenia documentation uses a number of words in a particular way.
+This glossary should make it easier to understand the rest of the documentation.</p>
+<dl>
+<dt>Source</dt><dd><p>Someone who wants to ship data to someone else. They do that by advertising a
+trees of files that are copied from the starting point to one or more pumps
+in the network. The advertisement sources produced tell others exactly where
+and how to download the files, and Sources have to say where they want the
+data to go to.</p>
+<p>Sources use programs like <a class="reference external" href="../Reference/sr3.1.rst#post">sr_post.1</a>,
+<a class="reference external" href="../Reference/sr3.1.rst#watch">sr_watch.1</a>, and <a class="reference external" href="../Reference/sr3.1.rst#poll">sr_poll(1)</a> to create
+their advertisements.</p>
+</dd>
+<dt>Subscribers</dt><dd><p>are those who examine advertisements about files that are available, and
+download the files they are interested in.</p>
+<p>Subscribers use <a class="reference external" href="../Reference/sr3.1.rst#subscribe">sr_subscribe(1)</a></p>
+</dd>
+<dt>Post, Notice, Notification, Advertisement, Announcement</dt><dd><p>These are AMQP messages build by sr_post, sr_poll, or sr_watch to let users
+know that a particular file is ready. The format of these AMQP messages is
+described by the <a class="reference external" href="../Reference/sr_post.7.rst">sr_post(7)</a> manual page. All of these
+words are used interchangeably. Advertisements at each step preserve the
+original source of the posting, so that report messages can be routed back
+to the source.</p>
+</dd>
+<dt>Report messages</dt><dd><p>These are AMQP messages (in <a class="reference external" href="../Reference/sr_post.7.rst">sr_post(7)</a> format, with _report_
+field included) built by consumers of messages, to indicate what a given pump
+or subscriber decided to do with a message. They conceptually flow in the
+opposite direction of notifications in a network, to get back to the source.</p>
+</dd>
+<dt>Pump or broker</dt><dd><p>A pump is a host running Sarracenia, either a rabbitmq AMQP server or an MQTTT
+one such as mosquitto. The message queueing middleware is called a <em>broker.</em>
+The pump has administrative users and manage the MQP broker
+as a dedicated resource. Some sort of transport engine, like an apache
+server, or an openssh server, is used to support file transfers. SFTP, and
+HTTP/HTTPS are the protocols which are fully supported by sarracenia. Pumps
+copy files from somewhere, and write them locally. They then re-advertise the
+local copy to its neighbouring pumps, and end user subscribers, they can
+obtain the data from this pump.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For end users, a pump and a broker is the same thing for all practical
+purposes. When pump administrators configure multi-host clusters, however, a
+broker might be running on two hosts, and the same broker could be used by
+many transport engines. The entire cluster would be considered a pump. So the
+two words are not always the same.</p>
+</div>
+<dl class="simple">
+<dt>Dataless Pumps</dt><dd><p>There are some pumps that have no transport engine, they just mediate
+transfers for other servers, by making messages available to clients and
+servers in their network area.</p>
+</dd>
+<dt>Dataless Transfers</dt><dd><p>Sometimes transfers through pumps are done without using local space on the pump.</p>
+</dd>
+<dt>Pumping Network</dt><dd><p>A number of interconnects servers running the sarracenia stack. Each stack
+determines how it routes items to the next hop, so the entire size or extent
+of the network may not be known to those who put data into it.</p>
+</dd>
+<dt>Network Maps</dt><dd><p>Each pump should provide a network map to advise users of the known destination
+that they should advertise to send to. <em>FIXME</em> undefined so far.</p>
+</dd>
+</dl>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Explanation/Glossary.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Glossary</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

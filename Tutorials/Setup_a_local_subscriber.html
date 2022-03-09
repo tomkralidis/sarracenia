@@ -1,0 +1,188 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>How to setup a Local Subscriber &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">How to setup a Local Subscriber</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="how-to-setup-a-local-subscriber">
+<h1><a class="toc-backref" href="#id1">How to setup a Local Subscriber</a><a class="headerlink" href="#how-to-setup-a-local-subscriber" title="Permalink to this headline">¶</a></h1>
+<p>This example goes over how to subscribe to the swob files from the Environment Canada Weather office.</p>
+<div class="contents topic" id="table-of-contents">
+<p class="topic-title">Table of Contents:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#how-to-setup-a-local-subscriber" id="id1">How to setup a Local Subscriber</a></p></li>
+</ul>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install rabbitmq-server
+$ sudo rabbitmqctl list_users
+  Listing users ...
+  user    tags
+  guest   [administrator]
+
+$ sudo rabbitmqctl add_user &#39;bob&#39;
+  Adding user &quot;bob&quot; ...
+  Password: robert
+
+$ sudo rabbitmqctl list_vhosts
+  Listing vhosts ...
+  name
+  /
+</pre></div>
+</div>
+<p>Set user permissions for vhost for bob’s configure:read:write:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo rabbitmqctl set_permissions -p &quot;/&quot; &quot;bob&quot; &quot;.*&quot; &quot;.*&quot; &quot;.*&quot;
+  Settting permissions for user &quot;bob&quot; in vhost &quot;/&quot; ...
+
+$ sudo rabbitmqctl set_user_tags bob management
+  Setting tags for user &quot;bob&quot; to [management] ...
+
+$ sudo rabbitmq-plugins enable rabbitmq_management
+$ /etc/init.d/rabbitmq-server restart
+</pre></div>
+</div>
+<p>For more on the different kinds of user tags, see <a class="reference external" href="https://www.rabbitmq.com/management.html#permissions">rabbitmq access and permissions.</a>
+Open <a class="reference external" href="http://localhost:15672/">http://localhost:15672/</a> in a web browser.
+Log in with the username/password created above.
+Click the <code class="docutils literal notranslate"><span class="pre">Queues</span></code> tab to monitor the progress from the broker’s perspective.
+Back in terminal:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir .config/sarra/subscribe
+$ vi .config/sarra/subscribe/test-subscribe.conf
+  broker amqp://bob:robert@localhost/
+  exchange xs_bob
+  directory /tmp/sarra/output
+  accept .*
+</pre></div>
+</div>
+<p>Setup the bits that post changes to the exchange:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir .config/sarra/watch
+$ vi $_/test-watch.conf
+  post_broker amqp://bob:robert@localhost/
+  post_exchange xs_bob
+  path /tmp/sarra/input/
+  events modify,create
+
+$ mkdir -p /tmp/sarra/{in,out}put
+$ sr start
+$ sr_watch log test-watch
+</pre></div>
+</div>
+<p>–&gt; All reporting normal.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr_subscribe log test-subscribe
+  .
+  .
+  2020-08-20 16:29:26,111 [ERROR] standard queue name based on:
+    prefix=q_bob
+    program_name=sr_subscribe
+    exchange_split=False
+    no=1
+</pre></div>
+</div>
+<p>–&gt; Note the line with <strong>[ERROR]</strong>, it was unable to find the queue.
+this is because the queue needs to first be created by sr_watch and since we started the
+subscriber and watch at the same time with ‘<code class="docutils literal notranslate"><span class="pre">sr</span> <span class="pre">start</span></code>’ we ran into a small race condition.
+This was soon after resolved as the sr_subscribe has a 1 second retry time.
+This can be confirmed with the ‘RabbitMQ Queues’ page showing a <code class="docutils literal notranslate"><span class="pre">q_bob.sr_subscribe.test_subscribe.</span> <span class="pre">...</span></code> queue in the list.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ touch /tmp/sarra/input/testfile1.txt
+$ ls /tmp/sarra/input/
+  testfile1.txt
+$ ls /tmp/sarra/output/
+    testfile1.txt
+$ sr_subscribe log test-subscribe
+  .
+  .
+  2020-08-20 16:29:26,078 [INFO] file_log downloaded to: /tmp/sarra/output/testfile1.txt
+
+$ sr_watch log test-watch
+  2020-08-20 16:29:20,612 [INFO] post_log notice=20200820212920.611807823 file:/ /tmp/sarra/input/testfile1.txt headers={&#39;to_clusters&#39;:&#39;localhost&#39;, &#39;mtime&#39;:&#39;20200820212920.0259232521&#39;, &#39;atime&#39;: &#39;20200820212920.0259232521&#39;, &#39;mode&#39;: &#39;644&#39;, &#39;parts&#39;: &#39;1,0,1,0,0&#39;, &#39;sum&#39;:&#39;d,d41d8cd98f00b204e9800998ecf8427e&#39;}
+
+$ touch /tmp/sarra/input/testfile{2..9}.txt
+$ for i in {001..015}; do echo &quot;file #$i&quot; &gt; file$i.txt; done
+$ watch -n 1 ls /tmp/sarra/output/
+</pre></div>
+</div>
+<p>Now you can watch the files trickle into the output folder,
+also watch the ‘RabbitMQ Queues’ page receive and process AMQP messages.
+When all is completed you can shut down both the subscriber and watcher with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sr stop
+  ...
+$ sr_subscribe cleanup test-subscribe
+  ...
+</pre></div>
+</div>
+<p>Now the queue has been deleted from RabbitMQ and all services have been stopped.</p>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Tutorials/Setup_a_local_subscriber.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">How to setup a Local Subscriber</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

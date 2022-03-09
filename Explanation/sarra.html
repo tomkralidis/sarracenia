@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Sarracenia &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Sarracenia</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="sarracenia">
+<h1><a class="toc-backref" href="#id6">Sarracenia</a><a class="headerlink" href="#sarracenia" title="Permalink to this headline">¶</a></h1>
+<p>[ <a class="reference external" href="fr/sarra.rst">version française</a> ]
+TODO: Coming soon..</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#sarracenia" id="id6">Sarracenia</a></p>
+<ul>
+<li><p><a class="reference internal" href="#overview" id="id7">Overview</a></p></li>
+<li><p><a class="reference internal" href="#implementations" id="id8">Implementations</a></p></li>
+<li><p><a class="reference internal" href="#downloading-sarracenia" id="id9">Downloading Sarracenia</a></p></li>
+<li><p><a class="reference internal" href="#getting-the-source-code" id="id10">Getting The Source Code</a></p></li>
+<li><p><a class="reference internal" href="#id1" id="id11">Documentation</a></p></li>
+<li><p><a class="reference internal" href="#deployments-use-cases" id="id12">Deployments/Use Cases</a></p></li>
+<li><p><a class="reference internal" href="#mailing-lists" id="id13">Mailing Lists</a></p></li>
+<li><p><a class="reference internal" href="#why" id="id14">Why?</a></p>
+<ul>
+<li><p><a class="reference internal" href="#why-not-just-use-rsync" id="id15">Why Not Just Use Rsync?</a></p></li>
+<li><p><a class="reference internal" href="#why-no-ftp" id="id16">Why No FTP?</a></p></li>
+<li><p><a class="reference internal" href="#amqp" id="id17">AMQP</a></p></li>
+<li><p><a class="reference internal" href="#references-links" id="id18">References &amp; Links</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<p><strong>MetPX-Sarracenia</strong> is a data duplication or distribution engine that leverages existing
+standard technologies (file and web servers and <a class="reference internal" href="#amqp">AMQP</a> brokers) to achieve real-time message
+delivery and end to end transparency in file transfers. Whereas in Sundew, each switch
+is a standalone configuration which transforms data in complex ways, in Sarracenia, the
+data sources establish a file tree hierarchy which is carried through any number of intervening
+pumps until they arrive at a client. The client can provide explicit acknowledgement that
+propagates back through the network to the source. Whereas traditional file switching
+is a point-to-point affair where knowledge is only between each segment, in Sarracenia,
+information flows from end to end in both directions.</p>
+<section id="overview">
+<h2><a class="toc-backref" href="#id7">Overview</a><a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>At its heart, Sarracenia exposes a tree of web accessible folders (WAF), using any
+standard HTTP server (tested with apache) or SFTP server, with other types of servers as
+a pluggable option. Weather applications are soft real-time, where data should be delivered
+as quickly as possible to the next hop, and minutes, perhaps seconds, count. The
+standard web push technologies, ATOM, RSS, etc… are actually polling technologies
+that when used in low latency applications consume a great deal of bandwidth and overhead.
+For exactly these reasons, those standards stipulate a minimum polling interval of five
+minutes. Advanced Message Queueing Protocol (AMQP) messaging brings true push
+to notifications, and makes real-time sending far more efficient.</p>
+<img alt="../_images/e-ddsr-components.jpg" src="../_images/e-ddsr-components.jpg" />
+<p>Sources of data announce their products, pumping systems pull the data using HTTP
+or SFTP onto their WAF trees, and then announce their trees for downstream clients.
+When clients download data, they may write a report message back to the server. Servers
+are configured to forward those client report messages back through the intervening
+servers back to the source. The Source can see the entire path that the data took
+to get to each client. With traditional switching applications, sources only see
+that they delivered to the first hop in a chain. Beyond that first hop, routing is
+opaque, and tracing the path of data required assistance from administrators of each
+intervening system. With Sarracenia’s report forwarding, the switching network is
+relatively transparent to the sources. Diagnostics are vastly simplified.</p>
+<p>For large files / high performance, files are segmented on ingest if they are sufficiently
+large to make this worthwhile. Each file can traverse the data pumping network independently,
+and reassembly is only needed at end points. A file of sufficient size will announce
+the availability of several segments for transfer, multiple threads or transfer nodes
+will pick up segments and transfer them. The more segments available, the higher
+the parallelism of the transfer. In many cases, Sarracenia manages parallelism
+and network usage without explicit user intervention. As intervening pumps
+do not store and forward entire files, the maximum file size which can traverse
+the network is maximized.</p>
+<p>Where Sundew supports a wide variety of file formats, protocols, and conventions
+specific to the real-time meteorology, Sarracenia takes a step further away from
+specific applications and is a ruthlessly generic tree replication engine, which
+should allow it to be used in other domains. The initial prototype client, dd_subscribe,
+in use since 2013, was replaced in 2016 by the full blown Sarracenia package,
+with all components necessary for production as well as consumption of file trees.</p>
+<p>Sarracenia is expected to be a far simpler application than sundew from every
+point of view: Operator, Developer, Analyst, Data Sources, Data Consumers.
+Sarracenia imposes a single interface mechanism, but that mechanism is
+completely portable and generic. It should run without issue on any modern
+platform (Linux, Windows, Mac).</p>
+<p>For more information about Sarra, view the
+<a class="reference external" href="https://www.youtube.com/watch?v=G47DRwzwckk">Sarracenia in 10 Minutes Video</a>
+or proceed to the detailed <a class="reference external" href="../Reference/sr3.1.rst#documentation">documentation</a></p>
+</section>
+<section id="implementations">
+<h2><a class="toc-backref" href="#id8">Implementations</a><a class="headerlink" href="#implementations" title="Permalink to this headline">¶</a></h2>
+<p>Part of Sarracenia defines an application layer message over AMQP as a transport.
+Sarracenia has multiple implementations:</p>
+<ul class="simple">
+<li><p>Sarracenia itself ( <a class="reference external" href="http://github.com/MetPX/sarracenia">http://github.com/MetPX/sarracenia</a> ) a complete reference implementation in Python &gt;= 3.4. It runs on Linux, Mac, and Windows.</p></li>
+<li><p>sarrac ( <a class="reference external" href="https://github.com/MetPX/sarrac">https://github.com/MetPX/sarrac</a> ) is a C implementation of data insertion (post &amp; watch). It is Linux only. There is also a libcshim to be able to tranparently implement data insertion with this tool, and libsarra allows C programs to post directly. There is consumer code as well (to read queues) but no downloading so far. This subset is meant to be used where python3 environments are impractical (some HPC environments).</p></li>
+<li><p>node-sarra ( <a class="reference external" href="https://github.com/darkskyapp/node-sarra">https://github.com/darkskyapp/node-sarra</a> ) An embryonic implementation for node.js.</p></li>
+<li><p>ecpush ( <a class="reference external" href="https://github.com/TheTannerRyan/ecpush">https://github.com/TheTannerRyan/ecpush</a> ) an simple client in Go ( <a class="reference external" href="http://golang.org">http://golang.org</a> )</p></li>
+<li><p>dd_subscribe ( <a class="reference external" href="https://github.com/MetPX/sarracenia">https://github.com/MetPX/sarracenia</a> ) python2 stripped-down download-only client.  The predecessor of Sarracenia. Still compatible.</p></li>
+<li><p>PySarra ( <a class="reference external" href="https://github.com/JohnTheNerd/PySarra">https://github.com/JohnTheNerd/PySarra</a> ) a very dumbed-down client for python3, allowing you to abstract away all the complexity.</p></li>
+</ul>
+<p>More implementations are welcome.</p>
+</section>
+<section id="downloading-sarracenia">
+<h2><a class="toc-backref" href="#id9">Downloading Sarracenia</a><a class="headerlink" href="#downloading-sarracenia" title="Permalink to this headline">¶</a></h2>
+<p>Steps for downloading the latest version of Sarracenia are available on our <a class="reference external" href="../Tutorials/Install.rst">downloads page</a> .</p>
+</section>
+<section id="getting-the-source-code">
+<h2><a class="toc-backref" href="#id10">Getting The Source Code</a><a class="headerlink" href="#getting-the-source-code" title="Permalink to this headline">¶</a></h2>
+<p>The source code is available from our <a class="reference external" href="https://github.com/MetPX/sarracenia">git repository</a> .</p>
+</section>
+<section id="id1">
+<h2><a class="toc-backref" href="#id11">Documentation</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>The documentation for Sarracenia can be found on our <a class="reference external" href="../Reference/sr3.1.rst#documentation">documentation</a> .</p>
+</section>
+<section id="deployments-use-cases">
+<h2><a class="toc-backref" href="#id12">Deployments/Use Cases</a><a class="headerlink" href="#deployments-use-cases" title="Permalink to this headline">¶</a></h2>
+<p>Deployment status in 2015: <a class="reference external" href="https://www.youtube.com/watch?v=G47DRwzwckk&amp;t=326s">Sarracenia in 10 Minutes Video (5:26 in)</a></p>
+<p>Deployment status in 2018: <a class="reference external" href="../../doc/deployment_2018.rst">Deployments as of January 2018</a></p>
+</section>
+<section id="mailing-lists">
+<h2><a class="toc-backref" href="#id13">Mailing Lists</a><a class="headerlink" href="#mailing-lists" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="http://lists.sourceforge.net/lists/listinfo/metpx-devel">metpx-devel</a>  : Discussions about development.</p></li>
+<li><p><a class="reference external" href="http://lists.sourceforge.net/lists/listinfo/metpx-commit">metpx-commit</a> : Shows logs of commits to the repository</p></li>
+</ul>
+</section>
+<section id="why">
+<h2><a class="toc-backref" href="#id14">Why?</a><a class="headerlink" href="#why" title="Permalink to this headline">¶</a></h2>
+<section id="why-not-just-use-rsync">
+<h3><a class="toc-backref" href="#id15">Why Not Just Use Rsync?</a><a class="headerlink" href="#why-not-just-use-rsync" title="Permalink to this headline">¶</a></h3>
+<p>There are a number of tree replication tools that are widely used, why invent another?
+<a class="reference external" href="https://rsync.samba.org/">RSync</a>, for example is a fabulous tool, and we
+recommend it highly for many use cases. But there are times when Sarracenia can
+go 72 times faster than rsync: Case Study: <a class="reference external" href="hpc_mirroring_use_case.rst">HPC Mirroring Use Case</a></p>
+<p>Rsync and other tools are comparison based (dealing with a single Source and Destination). Sarracenia, while it does
+not require or use multi-casting, is oriented towards delivery to multiple receivers, particularly when the source
+does not know who all the receivers are (pub/sub). Where rsync synchronization is typically done by walking a
+large tree, that means that the synchronization interval is inherently limited to the frequency at which you
+can do the file tree walks (in large trees, that can be a long time.) Each file tree walk reads
+the entire tree in order to generate signatures, so supporting larger numbers of clients causes
+large overhead. Sarracenia avoids file tree walks by having writers calculate the checksums once, and
+signal their activity directly to readers by messages, reducing overhead by orders of magnitude.
+<a class="reference external" href="https://github.com/axkibe/lsyncd">Lsyncd</a> is a tool that leverages the INOTIFY features of Linux
+to achieve the same liveness, and it might be more suitable but it is obviously not portable.
+Doing this through the file system is thought to be cumbersome and less general than explicit
+middleware message passing, which also handles the logs in a straight-forward way.</p>
+<p>One of the design goals of Sarracenia is to be end-to-end. Rsync is point-to-point,
+meaning it does not support the <em>transitivity</em> of transfers across multiple data pumps that
+is desired. On the other hand, the first use case for Sarracenia is the distribution of
+new files. Updates to files were not common initially. <a class="reference external" href="http://zsync.moria.org.uk/">ZSync</a>
+is much closer in spirit to this use case. Sarracenia now has a similar
+approach based on file partitions (or blocks), but with user selectable size
+(50M is a good choice), generally much larger than Zsync blocks (typically 4k),
+more amenable to acceleration. Using an announcement per checksummed block
+allows transfers to be accelerated more easily.</p>
+<p>The use of the AMQP message bus enables use of flexible third party transfers,
+straight-forward system-wide monitoring and integration of other features such as security
+scanning within the flow.</p>
+<p>Another consideration is that Sarracenia doesn’t actually implement any transport. It is completely agnostic
+to the actual protocol used to tranfer data. Once can post arbitrary protocol URLs, and add plugins to work
+with those arbitrary protocols, or substitute accelerated downloaders to deal with certain types of downloads.
+The <a class="reference external" href="download_scp.py">download_scp</a> plugin, included with the package, shows
+the use of the built-in python transfer mechanisms, but the simple use of a
+binary to accellerate downloads when the file exceeds a threshold size, making
+that method more efficient. Use of another compatible binary, such as <a class="reference external" href="download_dd.py">dd</a> or
+<a class="reference external" href="accel_cp.py">cp</a>, (for local files), <a class="reference external" href="download_scp.py">scp</a>, or <a class="reference external" href="accel_wget.py">wget</a> via
+plugins is also straightforward.</p>
+</section>
+<section id="why-no-ftp">
+<h3><a class="toc-backref" href="#id16">Why No FTP?</a><a class="headerlink" href="#why-no-ftp" title="Permalink to this headline">¶</a></h3>
+<p>The transport protocols fully supported by Sarracenia are http(s) and SFTP (SSH File Transfer Protocol).
+In many cases, when public data is being exchanged, <a class="reference external" href="https://tools.ietf.org/html/rfc959">FTP</a>
+is a lingua franca that is used. The main advantage being relatively simple
+programmatic access, but that advantage is obviated by the use of Sarracenia
+itself. Further, these days, with increased security concerns, and with cpu
+instructions for encryption and multiple cores something of a cpu glut,
+it no longer makes much sense not to encrypt traffic. Additionally, to
+support multi-streaming, Sarracenia makes use of byte-ranges, which are
+provided by SFTP and HTTP servers, but not FTP. So we cannot support file
+partitioning on FTP. So while FTP sort-of-works, it is not now, nor ever will
+be, fully supported.</p>
+</section>
+<section id="amqp">
+<h3><a class="toc-backref" href="#id17">AMQP</a><a class="headerlink" href="#amqp" title="Permalink to this headline">¶</a></h3>
+<p>AMQP is the Advanced Message Queuing Protocol, which emerged from the financial trading industry and has gradually
+matured. Implementations first appeared in 2007, and there are now several open source ones. AMQP implementations
+are not JMS plumbing. JMS standardizes the API programmers use, but not the on-the-wire protocol. So
+typically, one cannot exchange messages between people using different JMS providers. AMQP standardizes
+for interoperability, and functions effectively as an interoperability shim for JMS, without being
+limited to Java. AMQP is language neutral, and message neutral. There are many deployments using
+Python, C++, and Ruby. One could adapt WMO-GTS protocols very easily to function over AMQP. JMS
+providers are very Java oriented.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://www.amqp.org">www.amqp.org</a> - Defining AMQP.</p></li>
+<li><p><a class="reference external" href="http://www.openamq.org">www.openamq.org</a> - Original GPL implementation from JPMorganChase</p></li>
+<li><p><a class="reference external" href="http://www.rabbitmq.com">www.rabbitmq.com</a> - Another free implementation. The one we use and are happy with.</p></li>
+<li><p><a class="reference external" href="http://cwiki.apache.org/qpid">Apache Qpid</a> - Yet another free implementation.</p></li>
+<li><p><a class="reference external" href="http://activemq.apache.org/">Apache ActiveMQ</a> - This is really a JMS provider with a bridge for AMQP. They prefer their own openwire protocol.</p></li>
+</ul>
+<p>Sarracenia relies heavily on the use of brokers and topic based exchanges, which were prominent in AMQP standards efforts prior
+to version 1.0, at which point they were removed. It is hoped that these concepts will be re-introduced at some point. Until
+that time, the application will rely on pre-1.0 standard message brokers, such as rabbitmq.</p>
+</section>
+<section id="references-links">
+<h3><a class="toc-backref" href="#id18">References &amp; Links</a><a class="headerlink" href="#references-links" title="Permalink to this headline">¶</a></h3>
+<p>Other, somewhat similar software, no endorsements or judgements should be taken from these links:</p>
+<ul class="simple">
+<li><p>Manual on the Global Telecommunications´ System: WMO Manual 386. The standard reference for this domain. (a likely stale copy is  <a class="reference external" href="WMO-386.pdf">here</a>.) Try <a class="reference external" href="http://www.wmo.int">http://www.wmo.int</a> for the latest version.</p></li>
+<li><p><a class="reference external" href="http://www.unidata.ucar.edu/software/ldm">Local Data Manager</a> LDM includes a network protocol, and it fundamentally wishes to exchange with other LDM systems.  This package was instructive in interesting ways, in the early 2000’s there was an effort called NLDM which layered meteorological messaging over a standard TCP/IP protocol.  That effort died, however, but the inspiration of keeping the domain (weather) separate from the transport layer (TCP/IP) was an important motivation for MetPX.</p></li>
+<li><p><a class="reference external" href="http://www.dwd.de/AFD">Automatic File Distributor</a> - from the German Weather Service.  Routes files using the transport protocol of the user’s choice.  Philosophically close to MetPX Sundew.</p></li>
+<li><p><a class="reference external" href="http://www.corobor.com">Corobor</a> - commercial WMO switch supplier.</p></li>
+<li><p><a class="reference external" href="http://www.netsys.co.za">Netsys</a> - commercial WMO switch supplier.</p></li>
+<li><p><a class="reference external" href="http://www.iblsoft.com">IBLSoft</a> - commercial WMO switch supplier.</p></li>
+<li><p>variety of file transfer engines: Standard Networks Move IT DMZ, Softlink B-HUB &amp; FEST, Globalscape EFT Server, Axway XFB, Primeur Spazio, Tumbleweed Secure File Transfer, Messageway.</p></li>
+<li><p><a class="reference external" href="https://www.websocket.org/quantum.html">Quantum</a> about HTML5 web sockets. A good discussion of why traditional web push is awful, showing how web sockets can help.  AMQP is a pure socket solution that has the same advantages websockets for efficiency. Note: KAAZING wrote the piece, not disinterested.</p></li>
+<li><p><a class="reference external" href="https://rsync.samba.org/">Rsync</a> provides fast incremental file transfer.</p></li>
+<li><p><a class="reference external" href="https://github.com/axkibe/lsyncd">Lsyncd</a> Live syncing (Mirror) Daemon.</p></li>
+<li><p><a class="reference external" href="http://zsync.moria.org.uk">Zsync</a> optimised rsync over HTTP.</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Sarracenia</a><ul>
+<li><a class="reference internal" href="#overview">Overview</a></li>
+<li><a class="reference internal" href="#implementations">Implementations</a></li>
+<li><a class="reference internal" href="#downloading-sarracenia">Downloading Sarracenia</a></li>
+<li><a class="reference internal" href="#getting-the-source-code">Getting The Source Code</a></li>
+<li><a class="reference internal" href="#id1">Documentation</a></li>
+<li><a class="reference internal" href="#deployments-use-cases">Deployments/Use Cases</a></li>
+<li><a class="reference internal" href="#mailing-lists">Mailing Lists</a></li>
+<li><a class="reference internal" href="#why">Why?</a><ul>
+<li><a class="reference internal" href="#why-not-just-use-rsync">Why Not Just Use Rsync?</a></li>
+<li><a class="reference internal" href="#why-no-ftp">Why No FTP?</a></li>
+<li><a class="reference internal" href="#amqp">AMQP</a></li>
+<li><a class="reference internal" href="#references-links">References &amp; Links</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Explanation/sarra.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Sarracenia</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

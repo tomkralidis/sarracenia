@@ -1,0 +1,189 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Windows user manual &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows user manual</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="windows-user-manual">
+<h1><a class="toc-backref" href="#id1">Windows user manual</a><a class="headerlink" href="#windows-user-manual" title="Permalink to this headline">¶</a></h1>
+<p>This document teaches novice user with Python on Windows how they could easily run Sarracenia in various way.
+The screenshots were taken from <em>Windows Server 2012 R2 Standard</em> edition. Feel free to create issues if you believe that this
+document could be enhanced with one (or more) important case(s).</p>
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#windows-user-manual" id="id1">Windows user manual</a></p>
+<ul>
+<li><p><a class="reference internal" href="#running-sarracenia-with-a-command-prompt" id="id2">Running Sarracenia with a Command Prompt</a></p>
+<ul>
+<li><p><a class="reference internal" href="#from-the-start-menu" id="id3">From the Start Menu:</a></p></li>
+<li><p><a class="reference internal" href="#from-a-windows-powershell-session" id="id4">From a Windows Powershell session:</a></p></li>
+<li><p><a class="reference internal" href="#from-anaconda-prompt" id="id5">From Anaconda Prompt:</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#running-sarracenia-without-a-command-prompt" id="id6">Running Sarracenia without a Command Prompt</a></p>
+<ul>
+<li><p><a class="reference internal" href="#from-the-task-scheduler" id="id7">From the Task Scheduler:</a></p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="running-sarracenia-with-a-command-prompt">
+<h2><a class="toc-backref" href="#id2">Running Sarracenia with a Command Prompt</a><a class="headerlink" href="#running-sarracenia-with-a-command-prompt" title="Permalink to this headline">¶</a></h2>
+<section id="from-the-start-menu">
+<h3><a class="toc-backref" href="#id3">From the Start Menu:</a><a class="headerlink" href="#from-the-start-menu" title="Permalink to this headline">¶</a></h3>
+<p>Click on Sarracenia (it will execute <em>sr.exe restart</em>):</p>
+<img alt="../_images/start-menu-1.png" src="../_images/start-menu-1.png" />
+<p>This will pop Sarracenia’s Command Prompt, start Sarracenia processes as instructed by your configurations and show logging information.</p>
+<img alt="../_images/sarra-prompt.png" src="../_images/sarra-prompt.png" />
+<p>Keep this window alive until you are done with Sarracenia. Closing it or typing ctrl-c will kill all Sarracenia processes. You may also want to restart Sarracenia which will stop those processes cleanly.</p>
+</section>
+<section id="from-a-windows-powershell-session">
+<h3><a class="toc-backref" href="#id4">From a Windows Powershell session:</a><a class="headerlink" href="#from-a-windows-powershell-session" title="Permalink to this headline">¶</a></h3>
+<p>Launch a Powershell <img alt="powershell" src="../_images/powershell.png" /> session and type this command at the prompt:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sr</span> <span class="n">restart</span>
+</pre></div>
+</div>
+<p>This will start Sarracenia processes as instructed by your configurations and show logging information</p>
+<img alt="../_images/sarra-psprompt.png" src="../_images/sarra-psprompt.png" />
+<p>Keep this Powershell session alive until you are done with Sarracenia. To stop Sarracenia you may type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sr</span> <span class="n">stop</span>
+</pre></div>
+</div>
+<p>This will stop all Sarracenia processes cleanly as would do a restart. Closing this window will also kill all processes.</p>
+</section>
+<section id="from-anaconda-prompt">
+<h3><a class="toc-backref" href="#id5">From Anaconda Prompt:</a><a class="headerlink" href="#from-anaconda-prompt" title="Permalink to this headline">¶</a></h3>
+<p>Run this command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">activate</span> <span class="n">sarracenia</span> <span class="o">&amp;&amp;</span> <span class="n">sr</span> <span class="n">restart</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="running-sarracenia-without-a-command-prompt">
+<h2><a class="toc-backref" href="#id6">Running Sarracenia without a Command Prompt</a><a class="headerlink" href="#running-sarracenia-without-a-command-prompt" title="Permalink to this headline">¶</a></h2>
+<p>Here is a case where someone (like a sysadmin) needs to run Sarracenia without a Command Prompt and ensure that the system starts at Windows startup.
+The obvious way of doing it would be from the Task Scheduler.</p>
+<section id="from-the-task-scheduler">
+<h3><a class="toc-backref" href="#id7">From the Task Scheduler:</a><a class="headerlink" href="#from-the-task-scheduler" title="Permalink to this headline">¶</a></h3>
+<p>Open Server Manager &gt; Tools &gt; Task scheduler:</p>
+<img alt="../_images/task-scheduler_start.png" src="../_images/task-scheduler_start.png" />
+<p>Select <em>Create Basic Task</em> from the action panel:</p>
+<img alt="../_images/create-basic-task.png" src="../_images/create-basic-task.png" />
+<p>This will launch the <em>Create Basic Task Wizard</em> where you …</p>
+<blockquote>
+<div><p>Fill the name:</p>
+<img alt="../_images/cbtw_name.png" src="../_images/cbtw_name.png" />
+<p>Choose the trigger:</p>
+<img alt="../_images/cbtw_trigger.png" src="../_images/cbtw_trigger.png" />
+<p>Choose the action:</p>
+<img alt="../_images/cbtw_action.png" src="../_images/cbtw_action.png" />
+<p>Define the action:</p>
+<img alt="../_images/cbtw_action_program.png" src="../_images/cbtw_action_program.png" />
+<p>Review the task and choose <em>Finish</em>:</p>
+<img alt="../_images/cbtw_finish.png" src="../_images/cbtw_finish.png" />
+</div></blockquote>
+<p>Open the <em>Properties dialog</em> and choose <em>Run whether user is logged on or not</em> and <em>Run with highest privileges</em>:</p>
+<img alt="../_images/ssp_general.png" src="../_images/ssp_general.png" />
+<p>The task should now appear in your <em>Task Scheduler Library</em> with the status <em>Ready</em>.</p>
+<img alt="../_images/ts_results.png" src="../_images/ts_results.png" />
+<p>Then, you may run it immediately with the <img alt="run_action" src="../_images/run_action.png" /> button.</p>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Windows user manual</a><ul>
+<li><a class="reference internal" href="#running-sarracenia-with-a-command-prompt">Running Sarracenia with a Command Prompt</a><ul>
+<li><a class="reference internal" href="#from-the-start-menu">From the Start Menu:</a></li>
+<li><a class="reference internal" href="#from-a-windows-powershell-session">From a Windows Powershell session:</a></li>
+<li><a class="reference internal" href="#from-anaconda-prompt">From Anaconda Prompt:</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#running-sarracenia-without-a-command-prompt">Running Sarracenia without a Command Prompt</a><ul>
+<li><a class="reference internal" href="#from-the-task-scheduler">From the Task Scheduler:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Tutorials/Windows.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Windows user manual</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>

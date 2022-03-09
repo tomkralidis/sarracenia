@@ -1,0 +1,267 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>MetPX-Sarracenia Installation &#8212; sarracenia 3.00.013 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css" />
+    
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">MetPX-Sarracenia Installation</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="metpx-sarracenia-installation">
+<h1>MetPX-Sarracenia Installation<a class="headerlink" href="#metpx-sarracenia-installation" title="Permalink to this headline">¶</a></h1>
+<section id="revision-record">
+<h2>Revision Record<a class="headerlink" href="#revision-record" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">version</dt>
+<dd class="field-odd"><p>&#64;Version&#64;</p>
+</dd>
+<dt class="field-even">date</dt>
+<dd class="field-even"><p>&#64;Date&#64;</p>
+</dd>
+</dl>
+</section>
+<section id="client-installation">
+<h2>Client Installation<a class="headerlink" href="#client-installation" title="Permalink to this headline">¶</a></h2>
+<p>The package is built for python version 3.4 or higher. On systems where
+they are available, debian packages are recommended. These can be obtained from the
+launchpad repository. If you cannot use debian packages, then consider pip packages
+avialable from PyPI. In both cases, the other python packages (or dependencies) needed
+will be installed by the package manager automatically.</p>
+<section id="ubuntu-debian-apt-dpkg-recommended">
+<h3>Ubuntu/Debian (apt/dpkg) <strong>Recommended</strong><a class="headerlink" href="#ubuntu-debian-apt-dpkg-recommended" title="Permalink to this headline">¶</a></h3>
+<p>On Ubuntu 14.04/16.04/17.10/18.04 and derivatives of same:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">add</span><span class="o">-</span><span class="n">apt</span><span class="o">-</span><span class="n">repository</span> <span class="n">ppa</span><span class="p">:</span><span class="n">ssc</span><span class="o">-</span><span class="n">hpc</span><span class="o">-</span><span class="n">chp</span><span class="o">-</span><span class="n">spc</span><span class="o">/</span><span class="n">metpx</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">update</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">paramiko</span>   <span class="c1"># required SFTP support.</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">metpx</span><span class="o">-</span><span class="n">sarracenia</span>  <span class="c1"># only supports HTTP/HTTPS</span>
+<span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">sarrac</span> <span class="c1"># optional C client.</span>
+</pre></div>
+</div>
+<p>Currently, only the debian packages include man pages.  The guides are only available in the source repository.</p>
+</section>
+<section id="redhat-suse-distros-rpm-based">
+<h3>Redhat/Suse distros (rpm based)<a class="headerlink" href="#redhat-suse-distros-rpm-based" title="Permalink to this headline">¶</a></h3>
+<p>Python distutils on redhat package manager based distributions does not handle dependencies
+with the current packaging, so one needs to manually install them.
+For example, on fedora 28:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install python3-amqplib
+$ sudo dnf install python3-appdirs
+$ sudo dnf install python3-watchdog
+$ sudo dnf install python3-netifaces
+$ sudo dnf install python3-humanize
+$ sudo dnf install python3-psutil
+$ sudo dnf install python3-paramiko   # adds SFTP support.
+
+$ sudo dnf install python3-setuptools # needed to build rpm package.
+</pre></div>
+</div>
+<p>Once the dependencies are in place, one can build an RPM file using <code class="docutils literal notranslate"><span class="pre">setuptools</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/MetPX/sarracenia
+$ cd sarracenia
+
+$ python3 setup.py bdist_rpm
+$ sudo rpm -i dist/*.noarch.rpm
+</pre></div>
+</div>
+<p>This procedure installs only the python application (not the C one.)
+No man pages nor other documentation is installed either.</p>
+</section>
+<section id="pip">
+<h3>PIP<a class="headerlink" href="#pip" title="Permalink to this headline">¶</a></h3>
+<p>On Windows or other linux distributions where system packages are not available, the above procedures are not applicable.
+There are also special cases, such as if using python in virtual env, where it is more practical to install
+the package using pip (python install package) from <a class="reference external" href="http://pypi.python.org/">http://pypi.python.org/</a>.
+It is straightforward to do that:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo pip install paramiko
+$ sudo pip install metpx-sarracenia
+</pre></div>
+</div>
+<p>and to upgrade after the initial installation:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo pip uninstall metpx-sarracenia
+$ sudo pip install metpx-sarracenia
+</pre></div>
+</div>
+<p>NOTE:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">On</span> <span class="n">many</span> <span class="n">systems</span> <span class="n">where</span> <span class="n">both</span> <span class="n">pythons</span> <span class="mi">2</span> <span class="ow">and</span> <span class="mi">3</span> <span class="n">are</span> <span class="n">installed</span><span class="p">,</span> <span class="n">you</span> <span class="n">may</span> <span class="n">need</span> <span class="n">to</span> <span class="n">specify</span> <span class="n">pip3</span> <span class="n">rather</span> <span class="n">than</span> <span class="n">pip</span><span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
+<p>On Windows, there are 2 (other) possible options:</p>
+<dl>
+<dt><strong>Without Python</strong></dt><dd><p>Download Sarracenia installer file from <a class="reference external" href="https://hpfx.collab.science.gc.ca/~pas037/Sarracenia_Releases">here</a>,
+execute it and follow the instructions.
+Don’t forget to add <em>Sarracenia’s Python directory</em> to your <em>PATH</em>.</p>
+</dd>
+<dt><strong>With Anaconda</strong></dt><dd><p>Create your environment with the <a class="reference external" href="../windows/sarracenia_env.yml">file</a> suggested by this repository.
+Executing that command from the Anaconda Prompt should install everything:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -f sarracenia_env.yml
+</pre></div>
+</div>
+</dd>
+</dl>
+<p>See <a class="reference external" href="Windows.rst">Windows user manual</a> for more information on how to run Sarracenia on Windows.</p>
+</section>
+<section id="packages">
+<h3>Packages<a class="headerlink" href="#packages" title="Permalink to this headline">¶</a></h3>
+<p>Debian packages and python wheels can be downloaded directly
+from: <a class="reference external" href="https://launchpad.net/~ssc-hpc-chp-spc/+archive/ubuntu/metpx/+packages">launchpad</a></p>
+</section>
+</section>
+<section id="source">
+<h2>Source<a class="headerlink" href="#source" title="Permalink to this headline">¶</a></h2>
+<p>Source code for each module is available <a class="reference external" href="https://github.com/MetPX">https://github.com/MetPX</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/MetPX/sarracenia sarracenia
+$ cd sarracenia
+</pre></div>
+</div>
+<p>Development happens on the master branch.  One probably wants real release,
+so run git tag, and checkout the last one (the latest stable release):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git tag
+  .
+  .
+  .
+  v2.18.05b3
+  v2.18.05b4
+$ git checkout v2.18.05b4
+$ python3 setup.py bdist_wheel
+$ pip3 install dist/metpx_sarracenia-2.18.5b4-py3-none-any.whl
+</pre></div>
+</div>
+</section>
+<section id="sarrac">
+<h2>Sarrac<a class="headerlink" href="#sarrac" title="Permalink to this headline">¶</a></h2>
+<p>The C client is available in prebuilt binaries in the launchpad repositories alongside the python packages:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo add-apt-repository ppa:ssc-hpc-chp-spc/metpx
+$ sudo apt-get update
+$ sudo apt-get install sarrac
+</pre></div>
+</div>
+<p>For any recent ubuntu version. The librabbitmq-0.8.0 has been backported in the PPA.
+sarrac’s dependency. For other architectures or distributions, one can build from source:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/MetPX/sarrac
+</pre></div>
+</div>
+<p>on any linux system, as long as librabbitmq dependency is satisfied. Note that the package does
+not build or run on non-linux systems.</p>
+</section>
+<section id="building-on-old-systems">
+<h2>Building on Old Systems<a class="headerlink" href="#building-on-old-systems" title="Permalink to this headline">¶</a></h2>
+<p>Sarracenia requires python3, and python themselves do not support python3 older than 3.4.  Some older
+Linux distributions either have no python3 or have such an old version that it is difficult to install
+the necessary dependencies.</p>
+<p>On Ubuntu 12.04:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install python3-dev
+$ apt-get install python3-setuptools
+$ easy_install3 pip==1.5.6
+$ pip3 install paramiko==1.16.0
+$ pip3 install metpx_sarracenia==&lt;latest version&gt;
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Why the specific versions on older distributions?</strong></p>
+<p>pip &gt; 1.5.6 does not support python &lt; 3.2 which is the python in Ubuntu 12.04.</p>
+<p>Later versions of paramiko require the cryptography module, which
+doesn’t build on python-3.2, so need to use an older version of paramiko
+which uses pyCrypto, and that does build on 3.2.</p>
+</div>
+<p>Sarracenia still works python 3.2, but there might be some cosmetic functionality
+missing. When having trouble installing sarracenia, one should try building the C
+client (sarrac) as it has fewer dependencies and should be easier to build on older systems.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">MetPX-Sarracenia Installation</a><ul>
+<li><a class="reference internal" href="#revision-record">Revision Record</a></li>
+<li><a class="reference internal" href="#client-installation">Client Installation</a><ul>
+<li><a class="reference internal" href="#ubuntu-debian-apt-dpkg-recommended">Ubuntu/Debian (apt/dpkg) <strong>Recommended</strong></a></li>
+<li><a class="reference internal" href="#redhat-suse-distros-rpm-based">Redhat/Suse distros (rpm based)</a></li>
+<li><a class="reference internal" href="#pip">PIP</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+<li><a class="reference internal" href="#packages">Packages</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#source">Source</a></li>
+<li><a class="reference internal" href="#sarrac">Sarrac</a></li>
+<li><a class="reference internal" href="#building-on-old-systems">Building on Old Systems</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/Tutorials/Install.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="nav-item nav-item-0"><a href="../index.html">sarracenia 3.00.013 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">MetPX-Sarracenia Installation</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2022, Peter Silva.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.4.0.
+    </div>
+  </body>
+</html>
